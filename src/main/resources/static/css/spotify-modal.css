@@ -1,0 +1,115 @@
+:root{
+  --spotify-modal-bg: rgba(0,0,0,0.6);
+  --spotify-modal-max-width: 720px;
+  --spotify-modal-radius: 8px;
+  --spotify-player-bg: #35576f; /* 기본 플레이어 배경색 - 필요시 조정 */
+  --spotify-modal-gap: 12px;
+}
+
+/* 기본(숨김) */
+.spotify-modal{
+  display:none;
+  position:fixed;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  background:var(--spotify-modal-bg);
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+/* 열림 상태 */
+.spotify-modal.open{
+  display:flex;
+}
+
+.spotify-modal__inner{
+  background:var(--spotify-player-bg); /* inner 배경을 플레이어 배경색으로 설정해 하얀 여백을 숨김 */
+  border-radius: 0; /* 라운드 제거 */
+  max-width:var(--spotify-modal-max-width);
+  width:90%;
+  /* 기본은 콘텐츠에 맞춘 높이, 최대 80% 뷰포트 */
+  height:auto;
+  max-height:80vh;
+  margin:auto;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 8px 30px rgba(0,0,0,0.12);
+}
+
+.spotify-modal__header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 12px;
+  border-bottom:1px solid #eee;
+  gap:var(--spotify-modal-gap);
+  flex: 0 0 auto; /* header는 고정 높이 */
+  background: #fff; /* 헤더 부분은 흰색으로 유지 */
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.spotify-modal__title{ font-weight:600; }
+
+.spotify-modal__close{
+  background:#f2f2f2;
+  border:1px solid #e0e0e0;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.spotify-modal__iframe{
+  border:0;
+  width:100%;
+  /* iframe은 flex로 남은 영역을 채움 */
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0; /* flex 아이템이 부모의 남는 공간을 정확히 채우도록 */
+  border-radius: 0; /* iframe 자체의 라운드 제거 */
+  display:block;
+}
+
+/* player wrapper: iframe을 감싸고 남는 공간을 채우도록 함 */
+.spotify-modal__player{
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 24px; /* 내부 여백(앨범아트 등 위치 보정) 필요하면 조절 */
+  box-sizing: border-box;
+  background: var(--spotify-player-bg);
+}
+
+.spotify-modal__player .spotify-modal__iframe{
+  height: 100%;
+  flex: 1 1 auto;
+}
+
+/* 'full' 모드: 모달 내부를 크게 확장하여 iframe이 가득 차도록 함 */
+.spotify-modal__inner.full {
+  height:80vh; /* inner 전체 높이를 뷰포트 기반으로 확장 */
+}
+.spotify-modal__inner.full .spotify-modal__iframe{
+  /* iframe는 flex가 남은 영역을 채우므로 별도 높이 지정 불필요 */
+  height: auto;
+}
+
+/* ensure flex container allows children to shrink properly */
+.spotify-modal__inner, .spotify-modal__inner * { min-height: 0; }
+
+/* 작게보이는 화면 조정 */
+@media (max-width:600px){
+  .spotify-modal__inner{ height:70%; }
+  .spotify-modal__title{ font-size:14px; }
+}
+
+/* 강제 오버라이드: 프로젝트 내에 존재할 수도 있는 TrackWidget 클래스 우선 적용 */
+.TrackWidget_widgetContainer { border-radius: 0 !important; overflow: visible !important; }
+
+/* 안전장치: iframe의 부모 요소가 라운드를 유지하고 있다면 제거 */
+#spotify-modal, #spotify-modal .spotify-modal__inner { border-radius: 0 !important; }

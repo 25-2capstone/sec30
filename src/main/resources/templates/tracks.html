@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sec30 - Music Streaming</title>
+    <link rel="stylesheet" th:href="@{/css/mainpage.css}">
+    <link rel="stylesheet" th:href="@{/css/spotify-modal.css}">
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <div class="logo">🎵 Sec30 Music</div>
+    </div>
+    <div>
+        <a href="/tracks" class="mypage-box">메인 페이지로 돌아가기</a>
+    </div>
+</header>
+
+<div class="container">
+    <h1 class="page-title">인기 음악 스트리밍</h1>
+
+    <div class="search-bar">
+        <form th:action="@{/tracks}" method="get">
+            <input type="text" name="query" placeholder="음악 검색..."
+                   th:value="${searchQuery}" autocomplete="off">
+            <button type="submit">검색</button>
+        </form>
+    </div>
+
+    <div th:if="${error}" style="color: red; text-align: center; margin: 20px 0;">
+        <p th:text="${error}">오류 메시지</p>
+    </div>
+
+    <div th:if="${trackCount != null}" style="text-align: center; margin-bottom: 20px; color: #666;">
+        <p th:text="'총 ' + ${trackCount} + '개의 트랙'">총 0개의 트랙</p>
+    </div>
+
+    <div class="grid">
+        <div class="card" th:each="track : ${tracks}">
+            <img th:src="${track.imageUrl}"
+                 th:alt="${track.name}"
+                 style="width: 100%; border-radius: 6px; margin-bottom: 12px;">
+
+            <h3 th:text="${track.name}">Track Name</h3>
+            <p><strong>아티스트:</strong> <span th:text="${track.artist}">Artist</span></p>
+            <p><strong>앨범:</strong> <span th:text="${track.album}">Album</span></p>
+
+            <div style="margin-top: 12px; display: flex; gap: 8px;">
+                <button class="favorite-btn"
+                        th:attr="data-preview=${track.previewUrl}, data-trackid=${track.id}"
+                        onclick="handlePlay(this)"
+                        style="flex: 1; background: #1db954; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer;">
+                    ▶ 재생
+                </button>
+                <a th:href="${track.spotifyUrl}"
+                   target="_blank"
+                   style="flex: 1; background: #535353; color: white; text-decoration: none; padding: 8px; border-radius: 6px; text-align: center;">
+                    Spotify에서 열기
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${tracks == null || tracks.isEmpty()}" style="text-align: center; margin-top: 40px;">
+        <p style="font-size: 18px; color: #999;">표시할 트랙이 없습니다.</p>
+    </div>
+
+    <p class="footer-note">
+        이 페이지는 Spotify API를 사용하여 음악 정보를 제공합니다.
+    </p>
+</div>
+
+<audio id="global-player" style="display:none;"></audio>
+
+<script th:src="@{/js/spotify-modal.js}"></script>
+
+</body>
+</html>
+

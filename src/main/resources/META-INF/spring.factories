@@ -1,0 +1,2 @@
+context.initializer.classes=com.gmg.sec30.config.DotenvInitializer
+
