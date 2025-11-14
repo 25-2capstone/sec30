@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>블로그 글</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.10/dayjs.min.js"></script>
+    <script src="/js/utils.js" defer></script>
+    <script src="/js/comment.js" defer></script>
+
+    <style>
+        .popLayer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #commentUpdatePopup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10000;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .overlay_t {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+        }
+
+        .pop_container {
+            padding: 20px;
+        }
+
+        .btn_set {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn_close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+<body>
+<div class="p-5 mb-5 text-center bg-light">
+    <h1 class="mb-3">My blog</h1>
+    <h4 class="mb-3">블로그에 오신 것을 환영합니다.</h4>
+</div>
+
+<!--<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <article>
+                <input type="hidden" id="article-id" th:value="${article.id}">
+                <header class="mb-4">
+                    <h1 class="fw-bolder mb1" th:text="${article.title}"></h1>
+                    <div class="text-muted fst-italic mb-2" th:text="|Posted on ${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')} By ${article.author}|"></div>
+                </header>
+                <section class="mb-5">
+                    <p class="fs-5 mb-4" th:text="${article.content}"></p>
+                </section>
+                <button type="button" id="modify-btn"
+                        th:onclick="|location.href='@{/new-article?id={articleId}(articleId=${article.id})}'|"
+                        class="btn btn-primary btn-sm">수정</button>
+
+                <button type="button" id="delete-btn"
+                        class="btn btn-secondary btn-sm">삭제</button>
+            </article>-->
+
+            <!-- Fragment로 댓글 목록 포함 -->
+            <div th:replace="~{fragments/comment-list :: commentsList}"></div>
+
+            <!-- 댓글 작성 폼 -->
+            <div class="comment_write">
+                <fieldset>
+                    <legend class="skipinfo">댓글 입력</legend>
+                    <div class="comment_input">
+                        <p><textarea id="comment_Content" name="comment_Content" cols="90" rows="4" placeholder="댓글을 입력해주세요"></textarea></p>
+                        <span><button type="button" id="commentCreate-btn">등록</button></span>
+                    </div>
+                </fieldset>
+            </div>
+
+            <!-- 댓글 수정 모달 -->
+            <div id="commentUpdatePopup" class="popLayer">
+                <h3>댓글 수정</h3>
+                <div class="pop_container">
+                    <input type="hidden" id="modalCommentId">
+                    <table class="tb tb_row tl">
+                        <colgroup>
+                            <col style="width:30%;" /><col style="width:70%;" />
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <th scope="row">작성자<span class="es">필수 입력</span></th>
+                            <td><input type="text" id="modalWriter" name="modalWriter" placeholder="작성자를 입력해 주세요." readonly /></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">내용<span class="es">필수 입력</span></th>
+                            <td><textarea id="modalContent" name="modalContent" cols="90" rows="10" placeholder="수정할 내용을 입력해 주세요."></textarea></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p class="btn_set">
+                        <button type="button" id="commentUpdateBtn" class="btn btn_st2" onclick="updateComment()">수정</button>
+                        <button type="button" class="btn btn_bdr2" onclick="closeCommentUpdatePopup();">취소</button>
+                    </p>
+                </div>
+                <button type="button" class="btn_close" onclick="closeCommentUpdatePopup();"><span><i class="far fa-times-circle"></i></span></button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="/js/article.js"></script>
+</body>
+</html>
