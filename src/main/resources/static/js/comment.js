@@ -258,7 +258,7 @@ function closeCommentUpdatePopup() {
 }
 
 function updateComment() {
-    const articleId = document.getElementById('article-id').value;
+    const playlistId = document.getElementById('playlist-id').value;
     const commentId = document.getElementById('modal-comment-id').value;
     const content = document.getElementById('modal-content').value;
 
@@ -284,7 +284,7 @@ function updateComment() {
             console.log('수정 완료:', response);
             alert('수정되었습니다.');
             closeCommentUpdatePopup();
-            refreshComments(articleId);
+            refreshComments(playlistId);
         },
         error: function(xhr) {
             console.error('수정 실패:', xhr.responseText);

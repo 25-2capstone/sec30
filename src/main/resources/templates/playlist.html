@@ -73,7 +73,15 @@
 <body>
 
     <!--
-    fragment를 통해
+    댓글은 playlist 창에서 작업 해야하는 것이기 때문에, 윗 부분은 성수님 코드와 합치면 될 듯합니다.
+    단, 제가 js에서 document.getElementById('playlist-id') 등의 함수를 많이 이용했기 때문에,
+    어떠한 방식으로건 playlist-id를 위 본문에서 가져왔으면 합니다. 나머지는 크게 상관 없을 듯합니다.
+    -->
+
+
+    <!--
+    fragment를 통해 공통적인 부분은 가져옵니다.
+    공통적인 부분이라고 함은 비동기적으로 처리해야하는 부분을 말합니다.
     -->
     <div th:replace="~{fragments/comment-list :: comments-list}"></div>
 
