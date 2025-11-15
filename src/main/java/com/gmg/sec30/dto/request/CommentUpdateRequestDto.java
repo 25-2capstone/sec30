@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UpdateCommentRequest {
+
+public class CommentUpdateRequestDto {
     private String comment;
     private LocalDateTime updatedAt;
 }

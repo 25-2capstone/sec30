@@ -1,4 +1,5 @@
-<div id="comments-container" th:fragment="commentsList">
+<div id="comments-container" th:fragment="comments-list">
+    <!--부모가 없는, 즉 댓글들을 th:each로 불러옵니다.-->
     <div th:each="item : ${comments}" th:if="${item.parent == null}">
         <div class="comment-container">
             <section>
@@ -8,35 +9,46 @@
                 <p th:text="${item.comment}"></p>
             </section>
 
+            <!--원 댓글들에 대한 버튼입니다.
+            이 버튼들은 class 값과, data-reply-id를 통해 값을 comment.js로 넘겨줍니다.
+            그러면 comment.js는 버튼의 클래스와 id값을 통해 어떤 댓글의 어떠한 상호작용을 해야하는지 판단하고 기능합니다.
+            -->
             <div class="comment-actions">
-                <button type="button" class="commentUpdate-btn" th:data-reply-id="${item.id}">수정</button>
+                <button type="button" class="comment-update-btn" th:data-reply-id="${item.id}">수정</button>
                 <form style="display:inline;">
-                    <button type="button" class="commentDelete-btn" th:data-reply-id="${item.id}">삭제</button>
+                    <button type="button" class="comment-delete-btn" th:data-reply-id="${item.id}">삭제</button>
                 </form>
                 <button type="button" class="reply-toggle-btn" th:data-comment-id="${item.id}">대댓글</button>
             </div>
 
+            <!--답글 작성을 토글 할 수 있는 버튼입니다.
+            기본적으로 display:none으로 설정되어 보이지 않습니다만,
+            comment.js에서 reply-toggle-button을 누를 때 작동하는 함수로 다시 보이게 합니다.-->
             <div class="reply-form-container" style="display:none; margin-top: 10px;">
                 <form class="reply-form">
                     <label>
-                        <textarea name="replyContent" placeholder="대댓글 작성" required></textarea>
+                        <textarea name="reply-content" placeholder="대댓글 작성" required></textarea>
                     </label>
-                    <button type="submit" class="replyCreate-btn" th:data-parent-id="${item.id}">작성</button>
+                    <button type="submit" class="reply-create-btn" th:data-parent-id="${item.id}">작성</button>
                     <button type="button" class="reply-cancel-btn">취소</button>
                 </form>
             </div>
         </div>
 
-        <!-- 대댓글 -->
+        <!--답글들을 each로 불러옵니다.
+        reply: {item.children} 위에서 item을 comments로 등록했기에 reply: 답글만으로 해석할 수 있을 것 같습니다.
+        item.children = comments.children이기에, 답글 목록 객체라고 볼 수 있으며, 자세한 설명은
+        Comment 엔티티(Comment.java)에 설명이 되어있습니다.
+        나머지 불러오는 기능은 비슷합니다.-->
         <div style="margin-left: 40px; margin-top: 15px;">
             <div th:each="reply : ${item.children}" class="reply-item" style="border-left: 3px solid #ddd; padding-left: 15px; margin-bottom: 10px;">
-                <input type="hidden" name="commentId" th:value="${reply.id}">
+                <input type="hidden" name="comment-id" th:value="${reply.id}">
                 <strong th:text="${reply.author}"></strong>
                 <span th:text="${#temporals.format(reply.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
                 <p th:text="${reply.comment}"></p>
 
                 <form style="display:inline;">
-                    <button type="button" class="commentDelete-btn" th:data-reply-id="${reply.id}">삭제</button>
+                    <button type="button" class="comment-delete-btn" th:data-reply-id="${reply.id}">삭제</button>
                 </form>
             </div>
         </div>

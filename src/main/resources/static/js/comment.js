@@ -237,9 +237,9 @@ function openCommentUpdatePopup(id, playlistId) {
         },
         success: function(response) {
             console.log('댓글 조회 성공:', response);
-            document.getElementById('modalWriter').value = response.author; // 급하게 수정했는데, 실패시 nickname으로 바꿀 것.
-            document.getElementById('modalContent').value = response.comment;
-            document.getElementById('modalCommentId').value = id;
+            document.getElementById('modal-writer').value = response.author; // 급하게 수정했는데, 실패시 nickname으로 바꿀 것.
+            document.getElementById('modal-content').value = response.comment;
+            document.getElementById('modal-comment-id').value = id;
             layerPop('commentUpdatePopup');
         },
         error: function(xhr) {
@@ -251,9 +251,9 @@ function openCommentUpdatePopup(id, playlistId) {
 
 function closeCommentUpdatePopup() {
     console.log('수정 모달 닫기');
-    document.getElementById('modalContent').value = '';
-    document.getElementById('modalWriter').value = '';
-    document.getElementById('modalCommentId').value = '';
+    document.getElementById('modal-content').value = '';
+    document.getElementById('modal-writer').value = '';
+    document.getElementById('modal-comment-id').value = '';
     layerPopClose();
 }
 
@@ -315,9 +315,9 @@ function layerPop(popName) {
 }
 
 function layerPopClose() {
-    $(".popLayer").hide().unwrap('');
+    $(".pop-layer").hide().unwrap('');
     $('body').css('overflow', 'auto');
-    $(".popLayer video").each(function() {
+    $(".pop-layer video").each(function() {
         this.pause();
         this.load();
     });
@@ -326,7 +326,6 @@ function layerPopClose() {
 /*
 * 설계 목적:
 * DOM 요소에 접근 가능한 시점에 이벤트 리스너가 초기화되도록 하기 위한 함수입니다.
-*
 * */
 
 if (document.readyState === 'loading') {

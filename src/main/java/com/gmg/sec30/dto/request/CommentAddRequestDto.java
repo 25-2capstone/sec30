@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AddCommentRequest {
+public class CommentAddRequestDto {
 
     private String comment;
     private Comment parentId;
     private LocalDateTime createdDate = LocalDateTime.now();
     private LocalDateTime modifiedDate = LocalDateTime.now();
     private String author;
-    private Article articleId;
+    private Playlist playlistId;
 
     public Comment toEntity() {
         return Comment.builder()
@@ -26,7 +26,7 @@ public class AddCommentRequest {
                 .createdAt(createdDate)
                 .updatedAt(modifiedDate)
                 .author(author)
-                .articleId(articleId)
+                .playlistId(playlistId)
                 .build();
     }
 }
