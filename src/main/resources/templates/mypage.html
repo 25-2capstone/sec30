@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        h2 { margin: 30px 0 20px; }
+
+        .playlist-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .playlist-card {
+            width: 200px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .playlist-card:hover {
+            transform: scale(1.05);
+        }
+
+
+        .cover {
+            width: 100%;
+            height: 200px;
+        }
+
+        .cover.blue {
+            background-color: skyblue;
+        }
+        .cover.pink {
+            background-color: hotpink;
+        }
+        .cover.add-new {
+            background-color: #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 80px;
+            color: #666;
+        }
+
+        .playlist-card h4 {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 30px 0;
+            text-align: center;
+        }
+        .footer button {
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h2 th:text="${nickname} + '님의 마이페이지'">user님의 마이페이지</h2>
+
+<div class="playlist-container">
+    <a th:href="@{/playlist1}">
+        <div class="playlist-card">
+            <div class="cover blue"></div>
+            <h4>플레이리스트 1</h4>
+        </div>
+    </a>
+    <a th:href="@{/playlist2}">
+        <div class="playlist-card">
+            <div class="cover pink"></div>
+            <h4>플레이리스트 2</h4>
+        </div>
+    </a>
+    <a href="#" onclick="alert('Comming soon!')">
+        <div class="playlist-card">
+            <div class="cover add-new">
+                <span>+</span>
+            </div>
+            <h4>새 플레이리스트 추가</h4>
+        </div>
+    </a>
+</div>
+
+<p><a th:href="@{/mainpage}">메인 페이지로 돌아가기</a></p>
+
+<div class="footer">
+    <form id="deleteForm" th:action="@{/delete}" method="post">
+        <button type="submit">회원 탈퇴</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("deleteForm").addEventListener("submit", function(event){
+        event.preventDefault();
+        if(confirm("정말 탈퇴하시겠습니까?")){
+            alert("회원탈퇴 완료!");
+            window.location.href = "/";
+        }
+    });
+</script>
+</body>
+</html>
