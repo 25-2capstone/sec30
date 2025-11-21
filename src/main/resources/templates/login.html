@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>로그인</title>
+  <style>
+    body {font-family: system-ui; background:#121212; color:#fff; display:flex; align-items:center; justify-content:center; height:100vh; margin:0;}
+    .login-box {background:#1e1e1e; padding:40px 32px; border-radius:12px; width:340px; box-shadow:0 8px 24px rgba(0,0,0,.4);}
+    h1 {margin:0 0 24px; font-size:22px; text-align:center;}
+    form {display:flex; flex-direction:column; gap:16px;}
+    input {background:#2a2a2a; border:1px solid #333; border-radius:8px; padding:12px; color:#fff;}
+    input:focus {outline:2px solid #1ed760;}
+    button {background:#1ed760; color:#000; font-weight:700; border:none; padding:14px; border-radius:32px; cursor:pointer; transition:.15s;}
+    button:hover {background:#1fdf64;}
+    .hint {font-size:12px; color:#b3b3b3; text-align:center; margin-top:12px;}
+    a {color:#1ed760; text-decoration:none;}
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h1>로그인</h1>
+    <form th:action="@{/login}" method="post">
+      <input type="text" name="username" placeholder="아이디" required />
+      <input type="password" name="password" placeholder="비밀번호" required />
+      <button type="submit">로그인</button>
+    </form>
+    <div class="hint">데모 계정: <code>alex.johnson / password</code></div>
+  </div>
+</body>
+</html>
+# H2 로컬 개발 프로필
+spring.datasource.url=jdbc:h2:mem:sec30;MODE=MySQL;DB_CLOSE_DELAY=-1
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.open-in-view=false
+spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.jdbc.time_zone=UTC
+

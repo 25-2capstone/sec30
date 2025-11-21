@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${playlist.title} + ' - MusicHub'">Playlist Detail</title>
+    <link rel="stylesheet" th:href="@{/css/playlist-detail.css}">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V7.89l7-3.11v8.21z"/>
+                </svg>
+                <span class="logo-text">MusicHub</span>
+            </div>
+            <nav class="nav">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/browse" class="nav-link">Browse</a>
+                <a href="/playlists/my" class="nav-link active">My Library</a>
+            </nav>
+            <div class="header-right">
+                <div class="search-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8634 16.3741C19.1616 14.7849 19.94 12.7634 19.94 10.5579C19.94 5.41887 15.7138 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.43937 3.27893 10.533 3.27893C14.6266 3.27893 17.94 6.55226 17.94 10.5579C17.94 14.5636 14.6266 17.8369 10.533 17.8369C6.43937 17.8369 3.12598 14.5636 3.12598 10.5579Z"/>
+                    </svg>
+                    <input type="text" placeholder="Search">
+                </div>
+                <button class="icon-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                    </svg>
+                </button>
+                <div class="user-avatar"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 플레이리스트 헤더 -->
+            <div class="playlist-header">
+                <div class="playlist-cover">
+                    <img th:src="${playlist.coverImage}"
+                         th:alt="${playlist.title}"
+                         src="https://via.placeholder.com/280"
+                         alt="Playlist Cover">
+                </div>
+                <div class="playlist-info">
+                    <h1 class="playlist-title" th:text="${playlist.title}">나의 여름밤 드라이브</h1>
+                    <p class="playlist-description" th:text="${playlist.description}">
+                        창문 열고 달리고 싶을 때 듣는 시티팝 모음
+                    </p>
+                    <div class="playlist-meta">
+                        <span th:text="${playlist.trackCount} + '곡'">3곡</span>,
+                        총 <span th:text="${playlist.totalDuration}">2시간 15분</span>
+                    </div>
+                    <div class="playlist-actions">
+                        <button class="btn-edit">편집</button>
+                        <button class="btn-share">공유</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 플레이 컨트롤 -->
+            <div class="play-controls">
+                <button class="btn-play">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </button>
+                <button class="btn-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                    </svg>
+                </button>
+                <button class="btn-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 트랙 리스트 -->
+            <div class="track-list">
+                <div class="track-header">
+                    <div class="track-col track-col-number">#</div>
+                    <div class="track-col track-col-title">제목</div>
+                    <div class="track-col track-col-album">앨범</div>
+                    <div class="track-col track-col-date">추가된 날짜</div>
+                    <div class="track-col track-col-duration">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                            <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="track-items">
+                    <div class="track-item" th:each="track, iterStat : ${playlist.tracks}">
+                        <div class="track-col track-col-number">
+                            <span class="track-number" th:text="${iterStat.count}">1</span>
+                            <button class="track-play-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="track-col track-col-title">
+                            <img th:src="${track.albumImage}"
+                                 th:alt="${track.album}"
+                                 src="https://via.placeholder.com/40"
+                                 alt="Album"
+                                 class="track-image">
+                            <div class="track-details">
+                                <div class="track-name" th:text="${track.name}">Plastic Love</div>
+                                <div class="track-artist" th:text="${track.artist}">Mariya Takeuchi</div>
+                            </div>
+                        </div>
+                        <div class="track-col track-col-album" th:text="${track.album}">Variety</div>
+                        <div class="track-col track-col-date">2023-05-10</div>
+                        <div class="track-col track-col-duration" th:text="${track.formattedDuration}">4:53</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script th:src="@{/js/playlist-detail.js}"></script>
+</body>
+</html>
+

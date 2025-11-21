@@ -1,0 +1,39 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+  <title>플레이리스트 - Sec30 Music</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <!-- 플레이리스트 목록 -->
+    <section class="mypage-section">
+      <div class="mypage-section-title">
+        <span>인기 플레이리스트</span>
+      </div>
+
+      <div class="playlist-grid" th:if="${playlists != null and !playlists.isEmpty()}">
+        <a th:each="playlist : ${playlists}"
+           th:href="@{/playlist/{id}(id=${playlist.id})}"
+           class="playlist-item">
+          <div class="playlist-item-cover">
+            <img th:src="${playlist.coverImage}"
+                 th:alt="${playlist.name}"
+                 onerror="this.src='https://via.placeholder.com/300x300?text=Playlist'">
+          </div>
+          <div class="playlist-item-title" th:text="${playlist.name}">Playlist Name</div>
+          <div class="playlist-item-desc" th:text="${playlist.description}">Description</div>
+        </a>
+      </div>
+
+      <div class="empty-state" th:if="${playlists == null or playlists.isEmpty()}">
+        <div class="empty-state-icon">🎵</div>
+        <div class="empty-state-title">플레이리스트가 없습니다</div>
+        <div class="empty-state-desc">새로운 플레이리스트를 만들어보세요</div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
+

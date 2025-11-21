@@ -27,10 +27,10 @@ import java.util.List;
 @Service
 public class SpotifyService {
 
-    @Value("${spotify.client.id}")
+    @Value("${spotify.client.id:}")
     private String clientId;
 
-    @Value("${spotify.client.secret}")
+    @Value("${spotify.client.secret:}")
     private String clientSecret;
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
@@ -46,6 +46,11 @@ public class SpotifyService {
      * @throws InterruptedException 요청 중단
      */
     private String getAccessToken() throws IOException, InterruptedException {
+        if (clientId == null || clientId.isBlank() || clientSecret == null || clientSecret.isBlank()) {
+            log.warn("Spotify client credentials missing. Set SPOTIFY_CLIENT_ID / SPOTIFY_CLIENT_SECRET in .env");
+            throw new IllegalStateException("Missing Spotify credentials");
+        }
+
         if (accessToken != null && System.currentTimeMillis() < tokenExpiresAt) {
             return accessToken;
         }
@@ -79,34 +84,27 @@ public class SpotifyService {
 
     /**
      * 인기 있는 트랙을 가져옵니다.
+     * 인기 검색어를 사용하여 트랙을 조회합니다.
      *
      * @param limit 가져올 트랙 수 (최대 50)
      * @return 트랙 리스트
      */
     public List<Track> getPopularTracks(int limit) {
         try {
-            String token = getAccessToken();
+            // 인기 검색어들을 사용하여 트랙을 가져옵니다
+            String[] popularSearches = {
+                "top hits 2024",
+                "popular music",
+                "trending songs",
+                "viral hits",
+                "chart toppers"
+            };
 
-            // Spotify의 "Top 50 Global" 플레이리스트 ID
-            String playlistId = "37i9dQZEVXbMDoHDwVN2tF";
+            // 랜덤하게 하나 선택
+            String query = popularSearches[(int) (System.currentTimeMillis() % popularSearches.length)];
+            log.info("Fetching popular tracks with query: {}", query);
 
-            String url = String.format("https://api.spotify.com/v1/playlists/%s/tracks?limit=%d",
-                    playlistId, Math.min(limit, 50));
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .header("Authorization", "Bearer " + token)
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() == 200) {
-                return parseTracksFromPlaylist(response.body());
-            } else {
-                log.error("Failed to get popular tracks: {} - {}", response.statusCode(), response.body());
-                return new ArrayList<>();
-            }
+            return searchTracks(query, limit);
         } catch (Exception e) {
             log.error("Error getting popular tracks", e);
             return new ArrayList<>();
@@ -141,6 +139,9 @@ public class SpotifyService {
                 log.error("Failed to search tracks: {} - {}", response.statusCode(), response.body());
                 return new ArrayList<>();
             }
+        } catch (IllegalStateException e) {
+            log.warn("Skipping track search due to missing credentials");
+            return new ArrayList<>();
         } catch (Exception e) {
             log.error("Error searching tracks", e);
             return new ArrayList<>();
@@ -218,17 +219,18 @@ public class SpotifyService {
                 ? trackJson.get("preview_url").getAsString()
                 : null;
 
-        String spotifyUrl = trackJson.getAsJsonObject("external_urls").get("spotify").getAsString();
+        Integer durationMs = trackJson.has("duration_ms") && !trackJson.get("duration_ms").isJsonNull()
+                ? trackJson.get("duration_ms").getAsInt()
+                : 0;
 
         return Track.builder()
-                .id(id)
+                .spotifyId(id)
                 .name(name)
                 .artist(artist)
                 .album(albumName)
-                .imageUrl(imageUrl)
+                .albumImage(imageUrl)
+                .durationMs(durationMs)
                 .previewUrl(previewUrl)
-                .spotifyUrl(spotifyUrl)
                 .build();
     }
 }
-

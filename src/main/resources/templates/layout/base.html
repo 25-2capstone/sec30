@@ -1,0 +1,30 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${title} ?: 'Sec30 Music'">Sec30 Music</title>
+  <link rel="stylesheet" th:href="@{/css/base.css}">
+  <link rel="stylesheet" th:href="@{/css/layout.css}">
+  <link rel="stylesheet" th:href="@{/css/home.css}">
+  <link rel="stylesheet" th:href="@{/css/playlist.css}">
+  <link rel="stylesheet" th:href="@{/css/mypage.css}">
+  <th:block layout:fragment="head"></th:block>
+</head>
+<body>
+  <div class="app-wrapper">
+    <aside class="sidebar" th:replace="~{layout/sidebar :: sidebar}"></aside>
+    <div class="main-area">
+      <header class="topbar" th:replace="~{layout/header :: header}"></header>
+      <main class="content">
+        <div class="container">
+          <div layout:fragment="content"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <th:block layout:fragment="scripts"></th:block>
+</body>
+</html>
+

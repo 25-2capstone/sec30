@@ -1,81 +1,117 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sec30 - Music Streaming</title>
-    <link rel="stylesheet" th:href="@{/css/mainpage.css}">
-    <link rel="stylesheet" th:href="@{/css/spotify-modal.css}">
+  <title>음악 검색 - Sec30 Music</title>
 </head>
 <body>
-
-<header>
-    <div class="header-left">
-        <div class="logo">🎵 Sec30 Music</div>
-    </div>
-    <div>
-        <a href="/tracks" class="mypage-box">메인 페이지로 돌아가기</a>
-    </div>
-</header>
-
-<div class="container">
-    <h1 class="page-title">인기 음악 스트리밍</h1>
-
-    <div class="search-bar">
-        <form th:action="@{/tracks}" method="get">
-            <input type="text" name="query" placeholder="음악 검색..."
-                   th:value="${searchQuery}" autocomplete="off">
-            <button type="submit">검색</button>
-        </form>
-    </div>
-
-    <div th:if="${error}" style="color: red; text-align: center; margin: 20px 0;">
-        <p th:text="${error}">오류 메시지</p>
-    </div>
-
-    <div th:if="${trackCount != null}" style="text-align: center; margin-bottom: 20px; color: #666;">
-        <p th:text="'총 ' + ${trackCount} + '개의 트랙'">총 0개의 트랙</p>
-    </div>
-
-    <div class="grid">
-        <div class="card" th:each="track : ${tracks}">
-            <img th:src="${track.imageUrl}"
-                 th:alt="${track.name}"
-                 style="width: 100%; border-radius: 6px; margin-bottom: 12px;">
-
-            <h3 th:text="${track.name}">Track Name</h3>
-            <p><strong>아티스트:</strong> <span th:text="${track.artist}">Artist</span></p>
-            <p><strong>앨범:</strong> <span th:text="${track.album}">Album</span></p>
-
-            <div style="margin-top: 12px; display: flex; gap: 8px;">
-                <button class="favorite-btn"
-                        th:attr="data-preview=${track.previewUrl}, data-trackid=${track.id}"
-                        onclick="handlePlay(this)"
-                        style="flex: 1; background: #1db954; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer;">
-                    ▶ 재생
-                </button>
-                <a th:href="${track.spotifyUrl}"
-                   target="_blank"
-                   style="flex: 1; background: #535353; color: white; text-decoration: none; padding: 8px; border-radius: 6px; text-align: center;">
-                    Spotify에서 열기
-                </a>
-            </div>
+  <div layout:fragment="content">
+    <!-- 검색 결과 헤더 -->
+    <section class="home-section">
+      <div class="section-header">
+        <h2 class="section-title" th:text="${searchQuery != null and !searchQuery.isEmpty()} ? '검색 결과: ' + ${searchQuery} : '인기 트랙'">
+          인기 트랙
+        </h2>
+        <div style="color: var(--muted); font-size: 14px;" th:if="${trackCount != null}">
+          <span th:text="${trackCount} + '개의 트랙'">0개의 트랙</span>
         </div>
+      </div>
+
+      <!-- 트랙 그리드 -->
+      <div class="track-grid" th:if="${tracks != null and !tracks.isEmpty()}">
+        <div class="track-card" th:each="track : ${tracks}">
+          <div class="track-card-image">
+            <img th:src="${track.albumImage}"
+                 th:alt="${track.name}"
+                 onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
+            <button class="track-card-play"
+                    th:attr="data-preview=${track.previewUrl}, data-spotify-id=${track.spotifyId}"
+                    onclick="playTrack(this)"></button>
+          </div>
+          <div class="track-card-title" th:text="${track.name}">Track Name</div>
+          <div class="track-card-artist" th:text="${track.artist}">Artist</div>
+          <div style="color: var(--muted); font-size: 12px; margin-top: 4px;" th:text="${track.album}">Album</div>
+        </div>
+      </div>
+
+      <!-- 빈 상태 -->
+      <div class="empty-state" th:if="${tracks == null or tracks.isEmpty()}">
+        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-title">검색 결과가 없습니다</div>
+        <div class="empty-state-desc" th:if="${searchQuery != null and !searchQuery.isEmpty()}">
+          "<span th:text="${searchQuery}"></span>"에 대한 검색 결과가 없습니다.
+        </div>
+        <div class="empty-state-desc" th:if="${searchQuery == null or searchQuery.isEmpty()}">
+          음악을 검색해보세요
+        </div>
+      </div>
+    </section>
+
+    <!-- 에러 메시지 -->
+    <div th:if="${error}" style="text-align: center; padding: 32px; background: rgba(255,0,0,0.1); border-radius: 12px; margin-top: 24px;">
+      <p style="color: #ff6b6b; font-size: 16px;" th:text="${error}">오류 메시지</p>
     </div>
+  </div>
 
-    <div th:if="${tracks == null || tracks.isEmpty()}" style="text-align: center; margin-top: 40px;">
-        <p style="font-size: 18px; color: #999;">표시할 트랙이 없습니다.</p>
-    </div>
+  <th:block layout:fragment="scripts">
+    <audio id="global-player" style="display:none;"></audio>
+    <script>
+      let currentPlayingButton = null;
 
-    <p class="footer-note">
-        이 페이지는 Spotify API를 사용하여 음악 정보를 제공합니다.
-    </p>
-</div>
+      function playTrack(button) {
+        const previewUrl = button.getAttribute('data-preview');
+        const spotifyId = button.getAttribute('data-spotify-id');
 
-<audio id="global-player" style="display:none;"></audio>
+        if (!previewUrl || previewUrl === 'null') {
+          // 미리듣기가 없으면 Spotify로 이동
+          if (spotifyId && spotifyId !== 'null') {
+            window.open('https://open.spotify.com/track/' + spotifyId, '_blank');
+          } else {
+            alert('이 곡은 미리듣기를 제공하지 않습니다.');
+          }
+          return;
+        }
 
-<script th:src="@{/js/spotify-modal.js}"></script>
+        const player = document.getElementById('global-player');
 
+        // 같은 버튼을 다시 클릭한 경우
+        if (currentPlayingButton === button) {
+          if (!player.paused) {
+            player.pause();
+            button.style.background = '#1DB954';
+            button.innerHTML = '';
+            currentPlayingButton = null;
+          } else {
+            player.play();
+            button.style.background = '#1ed760';
+            button.innerHTML = '⏸';
+          }
+        } else {
+          // 다른 버튼을 클릭한 경우
+          if (currentPlayingButton) {
+            currentPlayingButton.style.background = '#1DB954';
+            currentPlayingButton.innerHTML = '';
+          }
+
+          player.src = previewUrl;
+          player.play();
+          button.style.background = '#1ed760';
+          button.innerHTML = '⏸';
+          currentPlayingButton = button;
+        }
+
+        // 재생 종료 시 버튼 상태 초기화
+        player.onended = function() {
+          if (currentPlayingButton) {
+            currentPlayingButton.style.background = '#1DB954';
+            currentPlayingButton.innerHTML = '';
+            currentPlayingButton = null;
+          }
+        };
+      }
+    </script>
+  </th:block>
 </body>
 </html>
 

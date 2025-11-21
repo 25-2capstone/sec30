@@ -1,0 +1,603 @@
+/* 전역 스타일 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #121212;
+    color: #fff;
+    display: grid;
+    grid-template-areas:
+        "sidebar main chart"
+        "player player player";
+    grid-template-columns: 320px 1fr 360px;
+    grid-template-rows: 1fr 90px;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 좌측 사이드바 */
+.sidebar {
+    grid-area: sidebar;
+    background-color: #000;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    margin-bottom: 32px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #1db954, #1ed760);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo-text h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.logo-text p {
+    font-size: 14px;
+    color: #b3b3b3;
+}
+
+/* 네비게이션 */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: #b3b3b3;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.nav-item:hover {
+    color: #fff;
+    background-color: #1a1a1a;
+}
+
+.nav-item.active {
+    background-color: #1a5a2e;
+    color: #fff;
+}
+
+.nav-icon {
+    font-size: 24px;
+}
+
+/* 플레이리스트 섹션 */
+.sidebar-playlists {
+    margin-top: 24px;
+}
+
+.sidebar-playlists h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #b3b3b3;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.create-playlist-btn {
+    width: 100%;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #1db954, #1ed760);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: transform 0.2s;
+}
+
+.create-playlist-btn:hover {
+    transform: scale(1.02);
+}
+
+.playlist-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.playlist-item {
+    padding: 8px 12px;
+    color: #b3b3b3;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: color 0.2s;
+}
+
+.playlist-item:hover {
+    color: #fff;
+}
+
+/* 메인 컨텐츠 영역 */
+.main-content {
+    grid-area: main;
+    background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
+    padding: 24px;
+    overflow-y: auto;
+}
+
+/* 검색 헤더 */
+.search-header {
+    margin-bottom: 32px;
+}
+
+.search-form {
+    position: relative;
+    max-width: 600px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #b3b3b3;
+}
+
+.search-form input {
+    width: 100%;
+    padding: 14px 20px 14px 48px;
+    background-color: #242424;
+    border: none;
+    border-radius: 24px;
+    color: #fff;
+    font-size: 15px;
+}
+
+.search-form input::placeholder {
+    color: #b3b3b3;
+}
+
+.search-form input:focus {
+    outline: 2px solid #fff;
+}
+
+/* Discover Weekly 섹션 */
+.discover-section {
+    margin-bottom: 40px;
+}
+
+.discover-card {
+    background: linear-gradient(135deg, #5f27cd 0%, #341f97 100%);
+    border-radius: 16px;
+    padding: 48px;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+}
+
+.discover-content {
+    max-width: 600px;
+}
+
+.discover-subtitle {
+    font-size: 14px;
+    color: #e0e0e0;
+    margin-bottom: 8px;
+}
+
+.discover-title {
+    font-size: 48px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    color: #fff;
+}
+
+.discover-description {
+    font-size: 16px;
+    color: #e0e0e0;
+    line-height: 1.6;
+    margin-bottom: 32px;
+}
+
+.play-btn {
+    padding: 14px 32px;
+    background-color: #1db954;
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.play-btn:hover {
+    background-color: #1ed760;
+    transform: scale(1.04);
+}
+
+.play-icon {
+    font-size: 14px;
+}
+
+/* 믹스 섹션 */
+.mix-section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.mix-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.mix-card {
+    aspect-ratio: 1;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.mix-card:hover {
+    transform: scale(1.02);
+}
+
+.gradient-1 {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.gradient-2 {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.mix-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+}
+
+.mix-overlay h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.mix-overlay p {
+    font-size: 14px;
+    color: #e0e0e0;
+}
+
+/* 우측 인기 차트 */
+.chart-sidebar {
+    grid-area: chart;
+    background-color: #181818;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.chart-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.chart-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chart-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.chart-item:hover {
+    background-color: #282828;
+}
+
+.chart-rank {
+    font-size: 18px;
+    font-weight: 700;
+    color: #b3b3b3;
+    min-width: 24px;
+}
+
+.chart-image {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.chart-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.chart-info h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chart-info p {
+    font-size: 13px;
+    color: #b3b3b3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chart-duration {
+    font-size: 14px;
+    color: #b3b3b3;
+}
+
+/* 하단 플레이어 */
+.player {
+    grid-area: player;
+    background-color: #181818;
+    border-top: 1px solid #282828;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+}
+
+.player-track {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 0;
+}
+
+.player-image {
+    width: 56px;
+    height: 56px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.player-info h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.player-info p {
+    font-size: 12px;
+    color: #b3b3b3;
+}
+
+/* 플레이어 컨트롤 */
+.player-controls {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    max-width: 720px;
+}
+
+.control-buttons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: #b3b3b3;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 8px;
+}
+
+.control-btn:hover {
+    color: #fff;
+}
+
+.play-btn-large {
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    color: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.play-btn-large:hover {
+    transform: scale(1.06);
+}
+
+/* 진행바 */
+.progress-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.progress-time {
+    font-size: 12px;
+    color: #b3b3b3;
+    min-width: 40px;
+}
+
+.progress-track {
+    flex: 1;
+    height: 4px;
+    background-color: #4d4d4d;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #fff;
+    border-radius: 2px;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background-color: #fff;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.progress-track:hover .progress-fill::after {
+    opacity: 1;
+}
+
+/* 볼륨 컨트롤 */
+.player-volume {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.volume-btn {
+    background: none;
+    border: none;
+    color: #b3b3b3;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.volume-btn:hover {
+    color: #fff;
+}
+
+.volume-slider {
+    width: 100px;
+    height: 4px;
+    background-color: #4d4d4d;
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+}
+
+.volume-fill {
+    height: 100%;
+    background-color: #fff;
+    border-radius: 2px;
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4d4d4d;
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
+/* 반응형 */
+@media (max-width: 1400px) {
+    body {
+        grid-template-columns: 280px 1fr 320px;
+    }
+}
+
+@media (max-width: 1200px) {
+    body {
+        grid-template-columns: 240px 1fr;
+        grid-template-areas:
+            "sidebar main"
+            "player player";
+    }
+
+    .chart-sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "main"
+            "player";
+    }
+
+    .sidebar {
+        display: none;
+    }
+}
+

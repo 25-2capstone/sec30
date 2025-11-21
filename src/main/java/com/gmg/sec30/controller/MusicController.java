@@ -1,88 +1,86 @@
 package com.gmg.sec30.controller;
 
+import com.gmg.sec30.dto.response.PlaylistResponseDto;
 import com.gmg.sec30.entity.Track;
+import com.gmg.sec30.service.PlaylistService;
 import com.gmg.sec30.service.SpotifyService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 음악 관련 요청을 처리하는 컨트롤러
- * 메인 페이지, 트랙 목록, 검색 등의 기능을 제공합니다.
- */
-@Slf4j
 @Controller
+@RequestMapping
 @RequiredArgsConstructor
 public class MusicController {
 
+    private final PlaylistService playlistService;
     private final SpotifyService spotifyService;
 
-    /**
-     * 메인 페이지 (루트 경로)
-     * 인기 트랙 40개를 표시합니다.
-     *
-     * @param model 뷰에 전달할 모델
-     * @return tracks 템플릿
-     */
-    @GetMapping("/")
-    public String mainPage(Model model) {
-        log.info("메인 페이지 요청");
-        return getTracks(null, model);
+    @GetMapping({"/", "/home"})
+    public String home(Model model) {
+        model.addAttribute("title", "홈");
+
+        // 인기 트랙 가져오기
+        List<Track> tracks = spotifyService.getPopularTracks(12);
+        if (tracks.isEmpty()) {
+            tracks = demoTracks();
+        }
+        model.addAttribute("tracks", tracks);
+
+        // 믹스 정보 (추후 구현 가능)
+        // List<Mix> mixes = musicService.getRecommendedMixes();
+        // model.addAttribute("mixes", mixes);
+
+        return "home/index";
     }
 
-    /**
-     * 트랙 목록 페이지
-     * 검색어가 있으면 검색 결과를, 없으면 인기 트랙을 표시합니다.
-     *
-     * @param query 검색어 (선택사항)
-     * @param model 뷰에 전달할 모델
-     * @return tracks 템플릿
-     */
     @GetMapping("/tracks")
-    public String getTracks(@RequestParam(required = false) String query, Model model) {
-        try {
-            List<Track> tracks;
+    public String tracks(@RequestParam(value = "query", required = false) String query, Model model) {
+        List<PlaylistResponseDto> popularPlaylists = playlistService.getPopularPlaylists(PageRequest.of(0, 10));
+        model.addAttribute("popularPlaylists", popularPlaylists);
+        model.addAttribute("searchQuery", query);
 
-            if (query != null && !query.trim().isEmpty()) {
-                log.info("트랙 검색 요청: query={}", query);
-                tracks = spotifyService.searchTracks(query, 40);
-                model.addAttribute("searchQuery", query);
-            } else {
-                log.info("인기 트랙 조회 요청");
-                tracks = spotifyService.getPopularTracks(40);
-            }
-
-            model.addAttribute("tracks", tracks);
-            model.addAttribute("trackCount", tracks.size());
-
-            log.info("트랙 {} 개 조회 완료", tracks.size());
-
-        } catch (Exception e) {
-            log.error("트랙 조회 중 오류 발생", e);
-            model.addAttribute("error", "트랙을 불러오는 중 오류가 발생했습니다.");
-            model.addAttribute("tracks", List.of());
+        List<Track> tracks;
+        if (query != null && !query.isBlank()) {
+            tracks = spotifyService.searchTracks(query, 20);
+        } else {
+            tracks = spotifyService.getPopularTracks(20);
         }
-
+        if (tracks.isEmpty()) {
+            tracks = demoTracks();
+        }
+        model.addAttribute("tracks", tracks);
+        model.addAttribute("trackCount", tracks.size());
         return "tracks";
     }
 
-    /**
-     * 404 에러 페이지로 리다이렉트
-     *
-     * @param model 뷰에 전달할 모델
-     * @return notfound 템플릿
-     */
-    @GetMapping("/notfound")
-    public String notFound(Model model) {
-        model.addAttribute("message", "요청하신 페이지를 찾을 수 없습니다.");
-        model.addAttribute("redirectTo", "/tracks");
-        model.addAttribute("delaySec", 3);
-        return "notfound";
+    private List<Track> demoTracks() {
+        List<Track> list = new ArrayList<>();
+        list.add(Track.builder()
+                .spotifyId("demo1")
+                .name("Demo Track 1")
+                .artist("Demo Artist")
+                .album("Demo Album")
+                .albumImage("https://via.placeholder.com/300x300?text=Demo1")
+                .durationMs(180000)
+                .previewUrl(null)
+                .build());
+        list.add(Track.builder()
+                .spotifyId("demo2")
+                .name("Demo Track 2")
+                .artist("Demo Artist")
+                .album("Demo Album")
+                .albumImage("https://via.placeholder.com/300x300?text=Demo2")
+                .durationMs(200000)
+                .previewUrl(null)
+                .build());
+        return list;
     }
 }
-

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Community</title>
+    <link rel="stylesheet" th:href="@{/css/mainpage.css}">
+</head>
+<body>
+    <!-- 왼쪽 사이드바 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">S</div>
+                <div class="logo-text">
+                    <div class="logo-title">Spotify</div>
+                    <div class="logo-subtitle">Community</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-item active">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12.5 3.247a1 1 0 0 0-1 0L4 7.577V20h4.5v-6a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v6H20V7.577l-7.5-4.33zm-2-1.732a3 3 0 0 1 3 0l7.5 4.33a2 2 0 0 1 1 1.732V21a1 1 0 0 1-1 1h-6.5a1 1 0 0 1-1-1v-6h-3v6a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7.577a2 2 0 0 1 1-1.732l7.5-4.33z"/>
+                </svg>
+                <span>홈</span>
+            </a>
+
+            <a href="/search" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8634 16.3741C19.1616 14.7849 19.94 12.7634 19.94 10.5579C19.94 5.41887 15.7138 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.43937 3.27893 10.533 3.27893C14.6266 3.27893 17.94 6.55226 17.94 10.5579C17.94 14.5636 14.6266 17.8369 10.533 17.8369C6.43937 17.8369 3.12598 14.5636 3.12598 10.5579Z"/>
+                </svg>
+                <span>검색</span>
+            </a>
+
+            <a href="/playlists/my" class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zM15.5 2.134A1 1 0 0 0 14 3v18a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6.464a1 1 0 0 0-.5-.866l-6-3.464zM9 2a1 1 0 0 0-1 1v18a1 1 0 1 0 2 0V3a1 1 0 0 0-1-1z"/>
+                </svg>
+                <span>내 라이브러리</span>
+            </a>
+        </nav>
+
+        <div class="playlists-section">
+            <div class="section-title">플레이리스트</div>
+            <button class="create-playlist-btn" onclick="createPlaylist()">
+                <svg viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M15.25 8a.75.75 0 0 1-.75.75H8.75v5.75a.75.75 0 0 1-1.5 0V8.75H1.5a.75.75 0 0 1 0-1.5h5.75V1.5a.75.75 0 0 1 1.5 0v5.75h5.75a.75.75 0 0 1 .75.75z"/>
+                </svg>
+                플레이리스트 만들기
+            </button>
+
+            <div class="playlist-list">
+                <a href="#" class="playlist-item">Liked Songs</a>
+                <a href="#" class="playlist-item">Chill Mix</a>
+                <a href="#" class="playlist-item">Workout Hits</a>
+                <a href="#" class="playlist-item">Indie Discoveries</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <!-- 검색바 -->
+            <div class="search-bar">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8634 16.3741C19.1616 14.7849 19.94 12.7634 19.94 10.5579C19.94 5.41887 15.7138 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.43937 3.27893 10.533 3.27893C14.6266 3.27893 17.94 6.55226 17.94 10.5579C17.94 14.5636 14.6266 17.8369 10.533 17.8369C6.43937 17.8369 3.12598 14.5636 3.12598 10.5579Z"/>
+                </svg>
+                <input type="text" placeholder="아티스트, 앨범, 또는 곡 검색">
+            </div>
+
+            <!-- Featured Banner -->
+            <div class="featured-banner">
+                <div class="banner-content">
+                    <div class="banner-subtitle">당신을 위한 새로운 발견</div>
+                    <h1 class="banner-title">Discover Weekly</h1>
+                    <p class="banner-description">
+                        당신만을 위해 매주 월요일 업데이트되는 새로운 음악. 즐겁게<br>
+                        감상하고 좋아하는 곡을 저장하세요.
+                    </p>
+                    <button class="play-button">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7.05 3.606l13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"/>
+                        </svg>
+                        지금 듣기
+                    </button>
+                </div>
+            </div>
+
+            <!-- 추천 믹스 섹션 -->
+            <section class="section">
+                <h2 class="section-header">회원님을 위한 맞춤 믹스</h2>
+                <div class="mix-grid">
+                    <div class="mix-card gradient-1">
+                        <div class="mix-card-overlay"></div>
+                    </div>
+                    <div class="mix-card gradient-2">
+                        <div class="mix-card-overlay"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- 오른쪽 사이드바 (인기 차트) -->
+    <div class="right-sidebar">
+        <h2 class="chart-title">인기곡차트</h2>
+        <div class="chart-list">
+            <div class="chart-item">
+                <div class="chart-rank">1</div>
+                <img src="https://via.placeholder.com/48" alt="Album Cover" class="chart-album">
+                <div class="chart-info">
+                    <div class="chart-song">Supernova</div>
+                    <div class="chart-artist">aespa</div>
+                </div>
+                <div class="chart-duration">3:42</div>
+            </div>
+
+            <div class="chart-item">
+                <div class="chart-rank">2</div>
+                <img src="https://via.placeholder.com/48" alt="Album Cover" class="chart-album">
+                <div class="chart-info">
+                    <div class="chart-song">Magnetic</div>
+                    <div class="chart-artist">ILLIT</div>
+                </div>
+                <div class="chart-duration">2:40</div>
+            </div>
+
+            <div class="chart-item">
+                <div class="chart-rank">3</div>
+                <img src="https://via.placeholder.com/48" alt="Album Cover" class="chart-album">
+                <div class="chart-info">
+                    <div class="chart-song">How Sweet</div>
+                    <div class="chart-artist">NewJeans</div>
+                </div>
+                <div class="chart-duration">3:39</div>
+            </div>
+
+            <div class="chart-item">
+                <div class="chart-rank">4</div>
+                <img src="https://via.placeholder.com/48" alt="Album Cover" class="chart-album">
+                <div class="chart-info">
+                    <div class="chart-song">SPOT! (feat.JENNIE)</div>
+                    <div class="chart-artist">ZICO</div>
+                </div>
+                <div class="chart-duration">3:13</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 플레이어 바 -->
+    <div class="player-bar">
+        <div class="player-left">
+            <img src="https://via.placeholder.com/56" alt="Now Playing" class="player-album">
+            <div class="player-info">
+                <div class="player-song">Supernova</div>
+                <div class="player-artist">aespa</div>
+            </div>
+        </div>
+
+        <div class="player-center">
+            <div class="player-controls">
+                <button class="control-btn">
+                    <svg viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M13.151.922a.75.75 0 1 0-1.06 1.06L13.109 3H11.16a3.75 3.75 0 0 0-2.873 1.34l-6.173 7.356A2.25 2.25 0 0 1 .39 12.5H0V14h.391a3.75 3.75 0 0 0 2.873-1.34l6.173-7.356a2.25 2.25 0 0 1 1.724-.804h1.947l-1.017 1.018a.75.75 0 0 0 1.06 1.06L15.98 3.75 13.15.922zM.391 3.5H0V2h.391c1.109 0 2.16.49 2.873 1.34L4.89 5.277l-.979 1.167-1.796-2.14A2.25 2.25 0 0 0 .39 3.5z"/>
+                        <path d="m7.5 10.723.98-1.167.957 1.14a2.25 2.25 0 0 0 1.724.804h1.947l-1.017-1.018a.75.75 0 1 1 1.06-1.06l2.829 2.828-2.829 2.828a.75.75 0 1 1-1.06-1.06L13.109 13H11.16a3.75 3.75 0 0 1-2.873-1.34l-.787-.938z"/>
+                    </svg>
+                </button>
+                <button class="control-btn">
+                    <svg viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M3.3 1a.7.7 0 0 1 .7.7v5.15l9.95-5.744a.7.7 0 0 1 1.05.606v12.575a.7.7 0 0 1-1.05.607L4 9.149V14.3a.7.7 0 0 1-.7.7H1.7a.7.7 0 0 1-.7-.7V1.7a.7.7 0 0 1 .7-.7h1.6z"/>
+                    </svg>
+                </button>
+                <button class="control-btn play-btn-large">
+                    <svg viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.288V1.713z"/>
+                    </svg>
+                </button>
+                <button class="control-btn">
+                    <svg viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M12.7 1a.7.7 0 0 0-.7.7v5.15L2.05 1.107A.7.7 0 0 0 1 1.712v12.575a.7.7 0 0 0 1.05.607L12 9.149V14.3a.7.7 0 0 0 .7.7h1.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7h-1.6z"/>
+                    </svg>
+                </button>
+                <button class="control-btn">
+                    <svg viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M0 4.75A3.75 3.75 0 0 1 3.75 1h8.5A3.75 3.75 0 0 1 16 4.75v5a3.75 3.75 0 0 1-3.75 3.75H9.81l1.018 1.018a.75.75 0 1 1-1.06 1.06L6.939 12.75l2.829-2.828a.75.75 0 1 1 1.06 1.06L9.811 12h2.439a2.25 2.25 0 0 0 2.25-2.25v-5a2.25 2.25 0 0 0-2.25-2.25h-8.5a2.25 2.25 0 0 0-2.25 2.25v5A2.25 2.25 0 0 0 3.75 12H5v1.5H3.75A3.75 3.75 0 0 1 0 9.75v-5z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="player-progress">
+                <span class="time">0:10</span>
+                <div class="progress-bar">
+                    <div class="progress-filled" style="width: 30%"></div>
+                </div>
+                <span class="time">0:30</span>
+            </div>
+        </div>
+
+        <div class="player-right">
+            <button class="control-btn">
+                <svg viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M13.426 2.574a2.831 2.831 0 0 0-4.797 1.55l3.247 3.247a2.831 2.831 0 0 0 1.55-4.797zM10.5 8.118l-2.619-2.62A63303.13 63303.13 0 0 0 4.74 9.075L2.065 12.12a1.287 1.287 0 0 0 1.816 1.816l3.044-2.676 3.58-3.141zM7.12 13.12A.999.999 0 1 0 5.706 14.535L7.12 13.12z"/>
+                </svg>
+            </button>
+            <div class="volume-control">
+                <svg viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M9.741.85a.75.75 0 0 1 .375.65v13a.75.75 0 0 1-1.125.65l-6.925-4a3.642 3.642 0 0 1-1.33-4.967 3.639 3.639 0 0 1 1.33-1.332l6.925-4a.75.75 0 0 1 .75 0zm-6.924 5.3a2.139 2.139 0 0 0 0 3.7l5.8 3.35V2.8l-5.8 3.35zm8.683 4.29V5.56a2.75 2.75 0 0 1 0 4.88z"/>
+                </svg>
+                <div class="volume-bar">
+                    <div class="volume-filled" style="width: 70%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>
+

@@ -1,0 +1,341 @@
+/* 파일: static/css/mypage.css - 마이페이지 스타일 */
+
+.mypage-header {
+  margin-bottom: 48px;
+  padding: 32px;
+  background: linear-gradient(135deg, rgba(75, 107, 230, 0.3) 0%, rgba(107, 43, 220, 0.3) 100%);
+  border-radius: 12px;
+}
+
+.mypage-header h1 {
+  font-size: 48px;
+  font-weight: 900;
+  margin-bottom: 16px;
+}
+
+.mypage-header p {
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.mypage-section {
+  margin-bottom: 48px;
+}
+
+.mypage-section-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mypage-section-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-small {
+  padding: 8px 16px;
+  font-size: 13px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.btn-small-primary {
+  background: var(--accent);
+  color: #000;
+}
+
+.btn-small-primary:hover {
+  background: #1ed760;
+  transform: scale(1.05);
+}
+
+.btn-small-secondary {
+  background: transparent;
+  border: 1px solid var(--muted);
+  color: var(--muted);
+}
+
+.btn-small-secondary:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+/* 내 플레이리스트 그리드 */
+.myplaylists .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+}
+
+.plist {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px;
+  border-radius: 12px;
+  transition: all 0.3s;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text);
+  display: block;
+  position: relative;
+}
+
+.plist:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.plist-cover {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.plist img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.plist-play {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 48px;
+  height: 48px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.plist:hover .plist-play {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.plist-play:hover {
+  background: #1ed760;
+  transform: scale(1.1);
+}
+
+.plist-play::before {
+  content: '▶';
+  color: #000;
+  font-size: 16px;
+  margin-left: 2px;
+}
+
+.plist-title {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plist-meta {
+  color: var(--muted);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plist-dot {
+  width: 3px;
+  height: 3px;
+  background: var(--muted);
+  border-radius: 50%;
+}
+
+/* 최근 활동 */
+.recent-activity {
+  margin-bottom: 48px;
+}
+
+.activity-list {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.activity-item {
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: background 0.2s;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.activity-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(29, 185, 84, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.activity-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activity-desc {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.activity-time {
+  color: var(--muted);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* 통계 카드 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 24px;
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.stat-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-4px);
+}
+
+.stat-card-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.stat-card-value {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+
+.stat-card-label {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* 빈 상태 */
+.empty-library {
+  text-align: center;
+  padding: 64px 24px;
+}
+
+.empty-library-icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+  opacity: 0.5;
+}
+
+.empty-library-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.empty-library-desc {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+  .mypage-header h1 {
+    font-size: 36px;
+  }
+
+  .mypage-section-title {
+    font-size: 24px;
+  }
+
+  .myplaylists .grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .mypage-header {
+    padding: 24px 16px;
+  }
+
+  .mypage-header h1 {
+    font-size: 28px;
+  }
+
+  .myplaylists .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-item {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .activity-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+}
+
