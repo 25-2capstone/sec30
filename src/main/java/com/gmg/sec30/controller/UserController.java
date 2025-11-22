@@ -44,10 +44,7 @@ public class UserController {
         return "mypage";
     }
 
-    @GetMapping("/logout")
-    public String showLogoutPage() {
-        return "logout";
-    }
+    // [삭제] 로그아웃은 SecurityConfig에서 처리하므로 컨트롤러 메서드 제거
 
     @GetMapping("/playlist1")
     public String showPlaylist1() {
@@ -68,10 +65,8 @@ public class UserController {
     public String showSearchResults(@RequestParam String query, Model model) {
         model.addAttribute("searchedQuery", query);
 
-        UserService.UserDto foundUser = userService.findByUsername(query);
-        if (foundUser == null) {
-            foundUser = userService.findByNickname(query);
-        }
+        // [수정] 서비스의 통합 검색 메서드를 사용하여 로직 간소화
+        UserService.UserDto foundUser = userService.searchUserIntegrated(query);
 
         if (foundUser != null) {
             model.addAttribute("isFound", true);
