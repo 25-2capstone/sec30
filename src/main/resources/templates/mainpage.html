@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>메인 페이지</title>
+
+    <style>
+        body { font-family: sans-serif; margin:0; padding:0; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #f0f0f0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mypage-box {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .search-button {
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logout-button {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        function logout() {
+            if (confirm("로그아웃 하시겠습니까?")) {
+                window.location.href = "/";
+            }
+        }
+    </script>
+</head>
+<body>
+<header>
+    <div class="header-left">
+        <a class="mypage-box" href="/mypage">마이페이지</a>
+        <a class="search-button" href="/search">회원 검색</a>
+    </div>
+
+    <a class="logout-button" href="#" onclick="logout(); return false;">로그아웃</a>
+</header>
+
+<h1 style="text-align:center;">메인 페이지</h1>
+<p style="text-align:center;">여기는 로그인 후 메인 페이지입니다.</p>
+</body>
+</html>
