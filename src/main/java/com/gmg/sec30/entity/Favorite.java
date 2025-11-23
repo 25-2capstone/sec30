@@ -1,7 +1,5 @@
 package com.gmg.sec30.entity;
 
-import com.gmg.sec30.entity.Playlist;
-import com.gmg.sec30.entity.Track;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,25 +8,25 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "playlist_track")
+@Table(name = "favorite")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@IdClass(PlaylistTrackId.class) // 복합키 클래스 지정
+@IdClass(FavoriteId.class) // 복합키 클래스 지정
 @EntityListeners(AuditingEntityListener.class) // createdAt 위함
-public class PlaylistTrack {
+public class Favorite {
+
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private User user;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "playlistId")
     private Playlist playlist;
-
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trackId")
-    private Track track;
 
     @CreatedDate
     @Column(name = "createdAt", nullable = false, updatable = false)

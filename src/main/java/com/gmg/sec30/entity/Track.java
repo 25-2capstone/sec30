@@ -1,53 +1,44 @@
 package com.gmg.sec30.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "tracks")
-@Data
+@Table(name = "track")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Track {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "trackId", length = 255) // ERD와 동일
+    private String trackId; // 외부 API에서 받는 값이므로 자동 생성 X
 
-    @Column(nullable = false)
-    private String spotifyId;
+    @Column(name = "trackTitle", length = 30, nullable = false)
+    private String trackTitle;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "artistName", length = 30)
+    private String artistName;
 
-    @Column(nullable = false)
-    private String artist;
+    @Column(name = "albumName", length = 30)
+    private String albumName;
 
-    private String album;
-
-    private String albumImage;
-
-    private Integer durationMs;
-
+    // 참고: ERD에 length 30으로 되어있으나, URL을 저장하기엔 짧아 보입니다. 255로 수정했습니다.
+    @Column(name = "previewUrl", length = 255)
     private String previewUrl;
 
-    @OneToMany(mappedBy = "track", cascade = CascadeType.ALL, orphanRemoval = true)
+    // 참고: ERD에 length 30으로 되어있으나, URL을 저장하기엔 짧아 보입니다. 255로 수정했습니다.
+    @Column(name = "imageUri", length = 255)
+    private String imageUri;
+
+    // --- 연관관계 매핑 ---
+
     @Builder.Default
+    @OneToMany(mappedBy = "track", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlaylistTrack> playlistTracks = new ArrayList<>();
-
-    public String getFormattedDuration() {
-        if (durationMs == null) return "0:00";
-        int totalSeconds = durationMs / 1000;
-        int minutes = totalSeconds / 60;
-        int seconds = totalSeconds % 60;
-        return String.format("%d:%02d", minutes, seconds);
-    }
 }
-

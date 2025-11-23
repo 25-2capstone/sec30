@@ -1,78 +1,54 @@
 package com.gmg.sec30.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "playlists")
-@Data
+@Table(name = "playlist")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Playlist {
+@SQLDelete(sql = "UPDATE playlist SET deleteAt = CURRENT_TIMESTAMP WHERE playlistId = ?")
+@Where(clause = "deleteAt IS NULL")
+public class Playlist extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "playlistId")
+    private Integer playlistId;
 
-    @Column(nullable = false)
-    private String title;
+    @Column(name = "playlistTitle", length = 20, nullable = false)
+    private String playlistTitle;
 
-    @Column(length = 1000)
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    private String coverImage;
+    // 참고: ERD에 length 30으로 되어있으나, URL을 저장하기엔 짧아 보입니다. 255로 수정했습니다.
+    @Column(name = "imageUri", length = 255)
+    private String imageUri;
+
+    // --- 연관관계 매핑 ---
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "userId", nullable = false)
     private User user;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @OneToMany(mappedBy = "playlist", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<PlaylistTrack> playlistTracks = new ArrayList<>();
-
     @OneToMany(mappedBy = "playlist", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "playlist", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Like> likes = new ArrayList<>();
+    @OneToMany(mappedBy = "playlist", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
 
-    public int getTrackCount() {
-        return playlistTracks != null ? playlistTracks.size() : 0;
-    }
-
-    public int getLikeCount() {
-        return likes != null ? likes.size() : 0;
-    }
-
-    public int getCommentCount() {
-        return comments != null ? comments.size() : 0;
-    }
-
-    public String getTotalDuration() {
-        if (playlistTracks == null || playlistTracks.isEmpty()) {
-            return "0시간 0분";
-        }
-        int totalSeconds = playlistTracks.stream()
-                .mapToInt(pt -> pt.getTrack().getDurationMs() / 1000)
-                .sum();
-        int hours = totalSeconds / 3600;
-        int minutes = (totalSeconds % 3600) / 60;
-        return hours + "시간 " + minutes + "분";
-    }
+    @Builder.Default
+    @OneToMany(mappedBy = "playlist", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlaylistTrack> playlistTracks = new ArrayList<>();
 }
-
