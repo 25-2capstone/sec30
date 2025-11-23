@@ -1,22 +1,22 @@
 package com.gmg.sec30.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -27,8 +27,8 @@ public class SecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 // CSS, JS, 이미지 등 정적 파일
                 .requestMatchers("/css/**", "/js/**", "/img/**", "/images/**").permitAll()
-                // 메인/홈/에러/파비콘 공개
-                .requestMatchers("/", "/home", "/error", "/favicon.ico").permitAll()
+                // 메인/홈/에러/파비콘/로그인 공개
+                .requestMatchers("/", "/home", "/error", "/favicon.ico", "/login").permitAll()
                 // 공개 조회용 (음악 검색/인기 트랙/플레이리스트 목록/상세) - 로그인 없이 바로 감상 가능
                 .requestMatchers(HttpMethod.GET,
                         "/tracks", "/tracks/**",
@@ -48,6 +48,8 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .loginPage("/login") // 커스텀 로그인 페이지
+                .defaultSuccessUrl("/tracks", true) // 로그인 성공 시 트랙 페이지로 이동
+                .failureUrl("/login?error") // 로그인 실패 시 에러 파라미터와 함께 로그인 페이지로
                 .permitAll()
             )
             .logout(logout -> logout.permitAll())

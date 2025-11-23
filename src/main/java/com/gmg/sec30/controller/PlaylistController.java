@@ -85,8 +85,40 @@ public class PlaylistController {
             @RequestParam String name,
             @RequestParam(required = false) String description,
             @AuthenticationPrincipal UserDetails userDetails) {
-        // TODO: 플레이리스트 생성 로직
-        // playlistService.createPlaylist(name, description, userDetails.getUsername());
+
+        System.out.println("=== 플레이리스트 생성 요청 시작 ===");
+        System.out.println("name: " + name);
+        System.out.println("description: " + description);
+        System.out.println("userDetails: " + (userDetails != null ? userDetails.getUsername() : "null"));
+
+        if (userDetails == null) {
+            System.out.println("사용자 인증 정보 없음 - 로그인 페이지로 이동");
+            return "redirect:/login";
+        }
+
+        try {
+            com.gmg.sec30.dto.request.PlaylistRequestDto requestDto =
+                com.gmg.sec30.dto.request.PlaylistRequestDto.builder()
+                    .title(name)
+                    .description(description)
+                    .coverImage(null) // 기본 이미지는 나중에 추가 가능
+                    .build();
+
+            System.out.println("PlaylistRequestDto 생성 완료: " + requestDto);
+
+            com.gmg.sec30.dto.response.PlaylistResponseDto result =
+                playlistService.createPlaylist(userDetails.getUsername(), requestDto);
+
+            System.out.println("플레이리스트 생성 성공! ID: " + result.getId());
+            System.out.println("=== 플레이리스트 생성 완료 ===");
+        } catch (Exception e) {
+            System.err.println("=== 플레이리스트 생성 중 오류 발생 ===");
+            System.err.println("에러 메시지: " + e.getMessage());
+            System.err.println("에러 타입: " + e.getClass().getName());
+            e.printStackTrace();
+            return "redirect:/playlist/create?error=true";
+        }
+
         return "redirect:/mypage";
     }
 }

@@ -34,26 +34,33 @@ public class MyPageController {
         if (userDetails != null) {
             String username = userDetails.getUsername();
 
-            // 내 플레이리스트 조회
-            // TODO: PlaylistService에 getMyPlaylists 메서드 추가 필요
-            // List<PlaylistResponseDto> myPlaylists = playlistService.getMyPlaylists(username);
-            // model.addAttribute("myPlaylists", myPlaylists);
-            // model.addAttribute("playlistCount", myPlaylists.size());
+            try {
+                // 내 플레이리스트 조회
+                System.out.println("[MyPageController] 사용자 " + username + "의 플레이리스트 조회 시작");
+                List<com.gmg.sec30.dto.response.PlaylistResponseDto> myPlaylists = playlistService.getUserPlaylists(username);
+                System.out.println("[MyPageController] 조회된 플레이리스트 수: " + myPlaylists.size());
+                model.addAttribute("myPlaylists", myPlaylists);
+                model.addAttribute("playlistCount", myPlaylists.size());
 
-            // 좋아요한 플레이리스트 조회
-            // TODO: LikeService에 getLikedPlaylists 메서드 추가 필요
-            // List<PlaylistResponseDto> likedPlaylists = likeService.getLikedPlaylists(username);
-            // model.addAttribute("likedPlaylists", likedPlaylists);
-            // model.addAttribute("likeCount", likedPlaylists.size());
+                // 좋아요한 플레이리스트 조회
+                // TODO: LikeService에 getLikedPlaylists 메서드 추가 필요
+                // List<PlaylistResponseDto> likedPlaylists = likeService.getLikedPlaylists(username);
+                // model.addAttribute("likedPlaylists", likedPlaylists);
+                model.addAttribute("likeCount", 0);
 
-            // 내가 작성한 댓글 조회
-            List<CommentResponseDto> myComments = commentService.getUserComments(username);
-            model.addAttribute("myComments", myComments);
-            model.addAttribute("commentCount", myComments.size());
-
-            // 임시 데이터 (플레이리스트와 좋아요는 TODO)
-            model.addAttribute("playlistCount", 0);
-            model.addAttribute("likeCount", 0);
+                // 내가 작성한 댓글 조회
+                List<CommentResponseDto> myComments = commentService.getUserComments(username);
+                model.addAttribute("myComments", myComments);
+                model.addAttribute("commentCount", myComments.size());
+            } catch (RuntimeException e) {
+                // 사용자 데이터가 없을 경우 기본값으로 처리
+                System.out.println("Warning: User data not found for " + username + " - " + e.getMessage());
+                e.printStackTrace();
+                model.addAttribute("playlistCount", 0);
+                model.addAttribute("likeCount", 0);
+                model.addAttribute("commentCount", 0);
+                model.addAttribute("myPlaylists", java.util.Collections.emptyList());
+            }
         } else {
             // 로그인하지 않은 경우 기본값
             model.addAttribute("playlistCount", 0);

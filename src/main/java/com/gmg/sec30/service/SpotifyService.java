@@ -223,6 +223,8 @@ public class SpotifyService {
                 ? trackJson.get("duration_ms").getAsInt()
                 : 0;
 
+        log.debug("Parsed track: {} - {} (preview: {})", artist, name, previewUrl != null ? "available" : "none");
+
         return Track.builder()
                 .spotifyId(id)
                 .name(name)

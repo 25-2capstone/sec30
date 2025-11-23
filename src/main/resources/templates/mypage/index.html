@@ -1,0 +1,90 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+  <title>마이페이지 - Sec30 Music</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <!-- 마이페이지 헤더 -->
+    <section class="home-section">
+      <div class="section-header">
+        <h2 class="section-title">내 라이브러리</h2>
+        <div style="color: var(--muted); font-size: 14px;">
+          <span>플레이리스트 <span th:text="${playlistCount}">0</span>개 · 좋아요 <span th:text="${likeCount}">0</span>개 · 댓글 <span th:text="${commentCount}">0</span>개</span>
+        </div>
+      </div>
+
+      <!-- 내 플레이리스트 섹션 -->
+      <div style="margin-bottom: 48px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="font-size: 20px; font-weight: 600; margin: 0;">내 플레이리스트</h3>
+          <a href="/playlist/create" style="background: var(--primary); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.2s;">
+            + 플레이리스트 만들기
+          </a>
+        </div>
+        <div th:if="${myPlaylists != null and !myPlaylists.isEmpty()}" class="track-grid">
+          <div class="track-card" th:each="playlist : ${myPlaylists}">
+            <div class="track-card-image">
+              <img th:src="${playlist.coverImage != null ? playlist.coverImage : 'https://via.placeholder.com/300x300?text=Playlist'}" th:alt="${playlist.title}">
+              <a th:href="@{/playlist/{id}(id=${playlist.id})}" class="track-card-play">▶</a>
+            </div>
+            <div class="track-card-title" th:text="${playlist.title}">Playlist Name</div>
+            <div class="track-card-artist" th:text="${playlist.description}">Description</div>
+          </div>
+        </div>
+        <div th:if="${myPlaylists == null or myPlaylists.isEmpty()}" class="empty-state">
+          <div class="empty-state-icon">📝</div>
+          <div class="empty-state-title">아직 만든 플레이리스트가 없습니다</div>
+          <div class="empty-state-desc">좋아하는 음악으로 나만의 플레이리스트를 만들어보세요</div>
+        </div>
+      </div>
+
+      <!-- 좋아요한 플레이리스트 섹션 -->
+      <div style="margin-bottom: 48px;">
+        <h3 style="font-size: 20px; margin-bottom: 16px; font-weight: 600;">좋아요한 플레이리스트</h3>
+        <div th:if="${likedPlaylists != null and !likedPlaylists.isEmpty()}" class="track-grid">
+          <div class="track-card" th:each="playlist : ${likedPlaylists}">
+            <div class="track-card-image">
+              <img th:src="${playlist.coverImage != null ? playlist.coverImage : 'https://via.placeholder.com/300x300?text=Playlist'}" th:alt="${playlist.title}">
+              <a th:href="@{/playlist/{id}(id=${playlist.id})}" class="track-card-play">▶</a>
+            </div>
+            <div class="track-card-title" th:text="${playlist.title}">Playlist Name</div>
+            <div class="track-card-artist" th:text="${playlist.description}">Description</div>
+          </div>
+        </div>
+        <div th:if="${likedPlaylists == null or likedPlaylists.isEmpty()}" class="empty-state">
+          <div class="empty-state-icon">❤️</div>
+          <div class="empty-state-title">아직 좋아요한 플레이리스트가 없습니다</div>
+          <div class="empty-state-desc">마음에 드는 플레이리스트에 좋아요를 눌러보세요</div>
+        </div>
+      </div>
+
+      <!-- 내 댓글 섹션 -->
+      <div>
+        <h3 style="font-size: 20px; margin-bottom: 16px; font-weight: 600;">내가 작성한 댓글</h3>
+        <div th:if="${myComments != null and !myComments.isEmpty()}" style="display: flex; flex-direction: column; gap: 16px;">
+          <div th:each="comment : ${myComments}" style="background: var(--card-bg); padding: 16px; border-radius: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <div>
+                <div style="font-size: 14px; color: var(--muted); margin-bottom: 4px;">
+                  플레이리스트: <a th:href="@{/playlist/{id}(id=${comment.playlistId})}" style="color: var(--primary); text-decoration: none;" th:text="${comment.playlistName}">플레이리스트 이름</a>
+                </div>
+                <div style="color: var(--text); font-size: 15px;" th:text="${comment.content}">댓글 내용</div>
+              </div>
+              <div style="font-size: 12px; color: var(--muted);" th:text="${comment.createdAt}">작성일</div>
+            </div>
+          </div>
+        </div>
+        <div th:if="${myComments == null or myComments.isEmpty()}" class="empty-state">
+          <div class="empty-state-icon">💬</div>
+          <div class="empty-state-title">아직 작성한 댓글이 없습니다</div>
+          <div class="empty-state-desc">플레이리스트에 댓글을 남겨보세요</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
+

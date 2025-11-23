@@ -41,6 +41,15 @@ public class MusicController {
         return "home/index";
     }
 
+    @GetMapping("/login")
+    public String login(@RequestParam(value = "error", required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("error", "아이디 또는 비밀번호가 올바르지 않습니다.");
+        }
+        model.addAttribute("title", "로그인");
+        return "login";
+    }
+
     @GetMapping("/tracks")
     public String tracks(@RequestParam(value = "query", required = false) String query, Model model) {
         List<PlaylistResponseDto> popularPlaylists = playlistService.getPopularPlaylists(PageRequest.of(0, 10));

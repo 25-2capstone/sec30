@@ -19,12 +19,18 @@
 <body>
   <div class="login-box">
     <h1>로그인</h1>
+    <div th:if="${error}" style="background:#e74c3c; padding:12px; border-radius:8px; margin-bottom:16px; text-align:center; font-size:14px;">
+      <span th:text="${error}">오류 메시지</span>
+    </div>
     <form th:action="@{/login}" method="post">
       <input type="text" name="username" placeholder="아이디" required />
       <input type="password" name="password" placeholder="비밀번호" required />
       <button type="submit">로그인</button>
     </form>
     <div class="hint">데모 계정: <code>alex.johnson / password</code></div>
+    <div style="text-align:center; margin-top:16px;">
+      <a href="/tracks">← 음악 듣기로 돌아가기</a>
+    </div>
   </div>
 </body>
 </html>

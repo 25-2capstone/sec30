@@ -32,8 +32,17 @@ public class PlaylistService {
 
     @Transactional
     public PlaylistResponseDto createPlaylist(String username, PlaylistRequestDto dto) {
+        System.out.println("[PlaylistService] createPlaylist 시작");
+        System.out.println("[PlaylistService] username: " + username);
+        System.out.println("[PlaylistService] dto: " + dto);
+
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> {
+                    System.err.println("[PlaylistService] 사용자를 찾을 수 없음: " + username);
+                    return new RuntimeException("User not found: " + username);
+                });
+
+        System.out.println("[PlaylistService] 사용자 찾음: " + user.getUsername() + " (ID: " + user.getId() + ")");
 
         Playlist playlist = Playlist.builder()
                 .title(dto.getTitle())
@@ -42,7 +51,12 @@ public class PlaylistService {
                 .user(user)
                 .build();
 
-        return PlaylistResponseDto.from(playlistRepository.save(playlist));
+        System.out.println("[PlaylistService] Playlist 엔티티 생성 완료");
+
+        Playlist savedPlaylist = playlistRepository.save(playlist);
+        System.out.println("[PlaylistService] Playlist 저장 완료! ID: " + savedPlaylist.getId());
+
+        return PlaylistResponseDto.from(savedPlaylist);
     }
 
     @Transactional

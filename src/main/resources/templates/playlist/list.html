@@ -18,11 +18,11 @@
            th:href="@{/playlist/{id}(id=${playlist.id})}"
            class="playlist-item">
           <div class="playlist-item-cover">
-            <img th:src="${playlist.coverImage}"
-                 th:alt="${playlist.name}"
+            <img th:src="${playlist.coverImage != null ? playlist.coverImage : 'https://via.placeholder.com/300x300?text=Playlist'}"
+                 th:alt="${playlist.title}"
                  onerror="this.src='https://via.placeholder.com/300x300?text=Playlist'">
           </div>
-          <div class="playlist-item-title" th:text="${playlist.name}">Playlist Name</div>
+          <div class="playlist-item-title" th:text="${playlist.title}">Playlist Name</div>
           <div class="playlist-item-desc" th:text="${playlist.description}">Description</div>
         </a>
       </div>

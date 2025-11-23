@@ -26,7 +26,9 @@
                  th:alt="${track.name}"
                  onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
             <button class="track-card-play"
-                    th:attr="data-preview=${track.previewUrl}, data-spotify-id=${track.spotifyId}"
+                    th:attr="data-preview=${track.previewUrl != null ? track.previewUrl : ''},
+                             data-spotify-id=${track.spotifyId},
+                             data-track-name=${track.name}"
                     onclick="playTrack(this)"></button>
           </div>
           <div class="track-card-title" th:text="${track.name}">Track Name</div>
@@ -62,10 +64,18 @@
       function playTrack(button) {
         const previewUrl = button.getAttribute('data-preview');
         const spotifyId = button.getAttribute('data-spotify-id');
+        const trackName = button.getAttribute('data-track-name');
 
-        if (!previewUrl || previewUrl === 'null') {
-          // 미리듣기가 없으면 Spotify로 이동
-          if (spotifyId && spotifyId !== 'null') {
+        console.log('=== Track Play Clicked ===');
+        console.log('Track Name:', trackName);
+        console.log('Preview URL:', previewUrl);
+        console.log('Spotify ID:', spotifyId);
+        console.log('Preview URL is empty?', !previewUrl || previewUrl === '' || previewUrl === 'null');
+
+        // 미리듣기 URL이 없으면 Spotify로 이동
+        if (!previewUrl || previewUrl === '' || previewUrl === 'null') {
+          console.log('No preview available, opening Spotify...');
+          if (spotifyId && spotifyId !== 'null' && spotifyId !== '') {
             window.open('https://open.spotify.com/track/' + spotifyId, '_blank');
           } else {
             alert('이 곡은 미리듣기를 제공하지 않습니다.');
@@ -73,36 +83,61 @@
           return;
         }
 
+        // 미리듣기 URL이 있으면 재생
+        console.log('Playing preview...');
         const player = document.getElementById('global-player');
 
         // 같은 버튼을 다시 클릭한 경우
         if (currentPlayingButton === button) {
           if (!player.paused) {
+            console.log('Pausing...');
             player.pause();
             button.style.background = '#1DB954';
             button.innerHTML = '';
             currentPlayingButton = null;
           } else {
-            player.play();
+            console.log('Resuming...');
+            player.play().catch(err => {
+              console.error('Play failed:', err);
+              alert('재생 중 오류가 발생했습니다.');
+            });
             button.style.background = '#1ed760';
             button.innerHTML = '⏸';
           }
         } else {
           // 다른 버튼을 클릭한 경우
+          console.log('Playing new track...');
           if (currentPlayingButton) {
             currentPlayingButton.style.background = '#1DB954';
             currentPlayingButton.innerHTML = '';
           }
 
           player.src = previewUrl;
-          player.play();
-          button.style.background = '#1ed760';
-          button.innerHTML = '⏸';
-          currentPlayingButton = button;
+          player.play().then(() => {
+            console.log('Playback started successfully');
+            button.style.background = '#1ed760';
+            button.innerHTML = '⏸';
+            currentPlayingButton = button;
+          }).catch(err => {
+            console.error('Play failed:', err);
+            alert('재생 중 오류가 발생했습니다.');
+          });
         }
 
         // 재생 종료 시 버튼 상태 초기화
         player.onended = function() {
+          console.log('Playback ended');
+          if (currentPlayingButton) {
+            currentPlayingButton.style.background = '#1DB954';
+            currentPlayingButton.innerHTML = '';
+            currentPlayingButton = null;
+          }
+        };
+
+        // 에러 핸들러
+        player.onerror = function(e) {
+          console.error('Player error:', e);
+          alert('오디오 재생 중 오류가 발생했습니다.');
           if (currentPlayingButton) {
             currentPlayingButton.style.background = '#1DB954';
             currentPlayingButton.innerHTML = '';
