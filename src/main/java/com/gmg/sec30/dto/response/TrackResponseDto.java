@@ -11,26 +11,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class TrackResponseDto {
-    private Long id;
-    private String spotifyId;
+    private String trackId;
+    private String spotifyId; // 호환성을 위해 유지
     private String name;
     private String artist;
     private String album;
     private String albumImage;
-    private Integer durationMs;
-    private String formattedDuration;
     private String previewUrl;
 
     public static TrackResponseDto from(Track track) {
         return TrackResponseDto.builder()
-                .id(track.getId())
-                .spotifyId(track.getSpotifyId())
-                .name(track.getName())
-                .artist(track.getArtist())
-                .album(track.getAlbum())
-                .albumImage(track.getAlbumImage())
-                .durationMs(track.getDurationMs())
-                .formattedDuration(track.getFormattedDuration())
+                .trackId(track.getTrackId())
+                .spotifyId(track.getTrackId()) // trackId를 spotifyId로도 반환
+                .name(track.getTrackTitle())
+                .artist(track.getArtistName())
+                .album(track.getAlbumName())
+                .albumImage(track.getImageUri())
                 .previewUrl(track.getPreviewUrl())
                 .build();
     }

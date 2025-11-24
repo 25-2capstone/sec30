@@ -22,15 +22,15 @@ public class PlaylistTrack {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "playlistId")
+    @JoinColumn(name = "playlist_id")
     private Playlist playlist;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trackId")
+    @JoinColumn(name = "track_id")
     private Track track;
 
     @CreatedDate
-    @Column(name = "createdAt", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

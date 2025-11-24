@@ -44,14 +44,14 @@ public class PlaylistController {
      */
     @GetMapping("/{id}")
     public String playlistDetail(
-            @PathVariable Long id,
+            @PathVariable Integer id,
             @AuthenticationPrincipal UserDetails userDetails,
             Model model) {
         model.addAttribute("title", "플레이리스트 상세");
 
-        // TODO: 플레이리스트 상세 정보 조회
-        // PlaylistResponseDto playlist = playlistService.getPlaylistById(id);
-        // model.addAttribute("playlist", playlist);
+        // 플레이리스트 상세 정보 조회
+        PlaylistResponseDto playlist = playlistService.getPlaylist(id);
+        model.addAttribute("playlist", playlist);
 
         // 댓글 목록 조회
         List<CommentResponseDto> comments = commentService.getPlaylistComments(id);

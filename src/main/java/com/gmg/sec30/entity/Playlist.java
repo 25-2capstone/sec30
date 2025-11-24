@@ -15,29 +15,29 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@SQLDelete(sql = "UPDATE playlist SET deleteAt = CURRENT_TIMESTAMP WHERE playlistId = ?")
-@Where(clause = "deleteAt IS NULL")
+@SQLDelete(sql = "UPDATE playlist SET delete_at = CURRENT_TIMESTAMP WHERE playlist_id = ?")
+@Where(clause = "delete_at IS NULL")
 public class Playlist extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "playlistId")
+    @Column(name = "playlist_id")
     private Integer playlistId;
 
-    @Column(name = "playlistTitle", length = 20, nullable = false)
+    @Column(name = "playlist_title", length = 20, nullable = false)
     private String playlistTitle;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     // 참고: ERD에 length 30으로 되어있으나, URL을 저장하기엔 짧아 보입니다. 255로 수정했습니다.
-    @Column(name = "imageUri", length = 255)
+    @Column(name = "image_uri", length = 255)
     private String imageUri;
 
     // --- 연관관계 매핑 ---
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Builder.Default

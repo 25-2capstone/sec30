@@ -22,7 +22,7 @@ public class CommentService {
     private final DomainLookupService lookup;
 
     @Transactional
-    public CommentResponseDto createComment(Long playlistId, String username, CommentRequestDto dto) {
+    public CommentResponseDto createComment(Integer playlistId, String username, CommentRequestDto dto) {
         User user = lookup.requireUser(username);
         Playlist playlist = lookup.requirePlaylist(playlistId);
 
@@ -36,27 +36,27 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long id, String username) {
+    public void deleteComment(Integer id, String username) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
 
-        if (!comment.getUser().getUsername().equals(username)) {
+        if (!comment.getUser().getNickname().equals(username)) {
             throw new RuntimeException("Unauthorized");
         }
 
         commentRepository.delete(comment);
     }
 
-    public List<CommentResponseDto> getPlaylistComments(Long playlistId) {
+    public List<CommentResponseDto> getPlaylistComments(Integer playlistId) {
         Playlist playlist = lookup.requirePlaylist(playlistId);
-        return commentRepository.findByPlaylistOrderByCreatedAtDesc(playlist).stream()
+        return commentRepository.findByPlaylistOrderByCreateAtDesc(playlist).stream()
                 .map(CommentResponseDto::from)
                 .collect(Collectors.toList());
     }
 
     public List<CommentResponseDto> getUserComments(String username) {
         User user = lookup.requireUser(username);
-        return commentRepository.findByUserOrderByCreatedAtDesc(user).stream()
+        return commentRepository.findByUserOrderByCreateAtDesc(user).stream()
                 .map(CommentResponseDto::from)
                 .collect(Collectors.toList());
     }

@@ -36,77 +36,80 @@ public class PlaylistService {
         System.out.println("[PlaylistService] username: " + username);
         System.out.println("[PlaylistService] dto: " + dto);
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByNickname(username)
+                .or(() -> userRepository.findByEmail(username))
                 .orElseThrow(() -> {
                     System.err.println("[PlaylistService] 사용자를 찾을 수 없음: " + username);
                     return new RuntimeException("User not found: " + username);
                 });
 
-        System.out.println("[PlaylistService] 사용자 찾음: " + user.getUsername() + " (ID: " + user.getId() + ")");
+        System.out.println("[PlaylistService] 사용자 찾음: " + user.getNickname() + " (ID: " + user.getUserId() + ")");
 
         Playlist playlist = Playlist.builder()
-                .title(dto.getTitle())
+                .playlistTitle(dto.getTitle())
                 .description(dto.getDescription())
-                .coverImage(dto.getCoverImage())
+                .imageUri(dto.getCoverImage())
                 .user(user)
                 .build();
 
         System.out.println("[PlaylistService] Playlist 엔티티 생성 완료");
 
         Playlist savedPlaylist = playlistRepository.save(playlist);
-        System.out.println("[PlaylistService] Playlist 저장 완료! ID: " + savedPlaylist.getId());
+        System.out.println("[PlaylistService] Playlist 저장 완료! ID: " + savedPlaylist.getPlaylistId());
 
         return PlaylistResponseDto.from(savedPlaylist);
     }
 
     @Transactional
-    public PlaylistResponseDto updatePlaylist(Long id, String username, PlaylistRequestDto dto) {
+    public PlaylistResponseDto updatePlaylist(Integer id, String username, PlaylistRequestDto dto) {
         Playlist playlist = playlistRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Playlist not found"));
 
-        if (!playlist.getUser().getUsername().equals(username)) {
+        if (!playlist.getUser().getNickname().equals(username)) {
             throw new RuntimeException("Unauthorized");
         }
 
-        playlist.setTitle(dto.getTitle());
+        playlist.setPlaylistTitle(dto.getTitle());
         playlist.setDescription(dto.getDescription());
-        playlist.setCoverImage(dto.getCoverImage());
+        playlist.setImageUri(dto.getCoverImage());
 
         return PlaylistResponseDto.from(playlist);
     }
 
     @Transactional
-    public void deletePlaylist(Long id, String username) {
+    public void deletePlaylist(Integer id, String username) {
         Playlist playlist = playlistRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Playlist not found"));
 
-        if (!playlist.getUser().getUsername().equals(username)) {
+        if (!playlist.getUser().getNickname().equals(username)) {
             throw new RuntimeException("Unauthorized");
         }
 
         playlistRepository.delete(playlist);
     }
 
-    public PlaylistResponseDto getPlaylist(Long id) {
+    public PlaylistResponseDto getPlaylist(Integer id) {
         Playlist playlist = playlistRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Playlist not found"));
         return PlaylistResponseDto.from(playlist);
     }
 
     public List<PlaylistResponseDto> getUserPlaylists(String username) {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByNickname(username)
+                .or(() -> userRepository.findByEmail(username))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return playlistRepository.findByUserOrderByCreatedAtDesc(user).stream()
+        return playlistRepository.findByUserOrderByCreateAtDesc(user).stream()
                 .map(PlaylistResponseDto::fromWithoutTracks)
                 .collect(Collectors.toList());
     }
 
     public Page<PlaylistResponseDto> getUserPlaylistsPaged(String username, Pageable pageable) {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByNickname(username)
+                .or(() -> userRepository.findByEmail(username))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return playlistRepository.findByUserOrderByCreatedAtDesc(user, pageable)
+        return playlistRepository.findByUserOrderByCreateAtDesc(user, pageable)
                 .map(PlaylistResponseDto::fromWithoutTracks);
     }
 
@@ -117,48 +120,45 @@ public class PlaylistService {
     }
 
     @Transactional
-    public void addTrackToPlaylist(Long playlistId, String username, TrackRequestDto dto) {
+    public void addTrackToPlaylist(Integer playlistId, String username, TrackRequestDto dto) {
         Playlist playlist = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new RuntimeException("Playlist not found"));
 
-        if (!playlist.getUser().getUsername().equals(username)) {
+        if (!playlist.getUser().getNickname().equals(username)) {
             throw new RuntimeException("Unauthorized");
         }
 
-        Track track = trackRepository.findBySpotifyId(dto.getSpotifyId())
+        Track track = trackRepository.findById(dto.getSpotifyId())
                 .orElseGet(() -> {
                     Track newTrack = Track.builder()
-                            .spotifyId(dto.getSpotifyId())
-                            .name(dto.getName())
-                            .artist(dto.getArtist())
-                            .album(dto.getAlbum())
-                            .albumImage(dto.getAlbumImage())
-                            .durationMs(dto.getDurationMs())
+                            .trackId(dto.getSpotifyId())
+                            .trackTitle(dto.getName())
+                            .artistName(dto.getArtist())
+                            .albumName(dto.getAlbum())
+                            .imageUri(dto.getAlbumImage())
                             .previewUrl(dto.getPreviewUrl())
                             .build();
                     return trackRepository.save(newTrack);
                 });
 
-        int position = playlist.getPlaylistTracks().size();
         PlaylistTrack playlistTrack = PlaylistTrack.builder()
                 .playlist(playlist)
                 .track(track)
-                .position(position)
                 .build();
 
         playlistTrackRepository.save(playlistTrack);
     }
 
     @Transactional
-    public void removeTrackFromPlaylist(Long playlistId, Long trackId, String username) {
+    public void removeTrackFromPlaylist(Integer playlistId, String trackId, String username) {
         Playlist playlist = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new RuntimeException("Playlist not found"));
 
-        if (!playlist.getUser().getUsername().equals(username)) {
+        if (!playlist.getUser().getNickname().equals(username)) {
             throw new RuntimeException("Unauthorized");
         }
 
-        playlist.getPlaylistTracks().removeIf(pt -> pt.getTrack().getId().equals(trackId));
+        playlist.getPlaylistTracks().removeIf(pt -> pt.getTrack().getTrackId().equals(trackId));
     }
 }
 

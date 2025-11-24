@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 public class PlaylistResponseDto {
-    private Long id;
+    private Integer id;
     private String title;
     private String description;
     private String coverImage;
@@ -24,21 +24,19 @@ public class PlaylistResponseDto {
     private int trackCount;
     private int likeCount;
     private int commentCount;
-    private String totalDuration;
     private List<TrackResponseDto> tracks;
 
     public static PlaylistResponseDto from(Playlist playlist) {
         return PlaylistResponseDto.builder()
-                .id(playlist.getId())
-                .title(playlist.getTitle())
+                .id(playlist.getPlaylistId())
+                .title(playlist.getPlaylistTitle())
                 .description(playlist.getDescription())
-                .coverImage(playlist.getCoverImage())
-                .username(playlist.getUser().getUsername())
-                .createdAt(playlist.getCreatedAt())
-                .trackCount(playlist.getTrackCount())
-                .likeCount(playlist.getLikeCount())
-                .commentCount(playlist.getCommentCount())
-                .totalDuration(playlist.getTotalDuration())
+                .coverImage(playlist.getImageUri())
+                .username(playlist.getUser().getNickname())
+                .createdAt(playlist.getCreateAt())
+                .trackCount(playlist.getPlaylistTracks() != null ? playlist.getPlaylistTracks().size() : 0)
+                .likeCount(playlist.getFavorites() != null ? playlist.getFavorites().size() : 0)
+                .commentCount(playlist.getComments() != null ? playlist.getComments().size() : 0)
                 .tracks(playlist.getPlaylistTracks().stream()
                         .map(pt -> TrackResponseDto.from(pt.getTrack()))
                         .collect(Collectors.toList()))
@@ -47,16 +45,15 @@ public class PlaylistResponseDto {
 
     public static PlaylistResponseDto fromWithoutTracks(Playlist playlist) {
         return PlaylistResponseDto.builder()
-                .id(playlist.getId())
-                .title(playlist.getTitle())
+                .id(playlist.getPlaylistId())
+                .title(playlist.getPlaylistTitle())
                 .description(playlist.getDescription())
-                .coverImage(playlist.getCoverImage())
-                .username(playlist.getUser().getUsername())
-                .createdAt(playlist.getCreatedAt())
-                .trackCount(playlist.getTrackCount())
-                .likeCount(playlist.getLikeCount())
-                .commentCount(playlist.getCommentCount())
-                .totalDuration(playlist.getTotalDuration())
+                .coverImage(playlist.getImageUri())
+                .username(playlist.getUser().getNickname())
+                .createdAt(playlist.getCreateAt())
+                .trackCount(playlist.getPlaylistTracks() != null ? playlist.getPlaylistTracks().size() : 0)
+                .likeCount(playlist.getFavorites() != null ? playlist.getFavorites().size() : 0)
+                .commentCount(playlist.getComments() != null ? playlist.getComments().size() : 0)
                 .build();
     }
 }

@@ -12,14 +12,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
-    List<Playlist> findByUserOrderByCreatedAtDesc(User user);
-    Page<Playlist> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
+public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
+    List<Playlist> findByUserOrderByCreateAtDesc(User user);
+    Page<Playlist> findByUserOrderByCreateAtDesc(User user, Pageable pageable);
 
-    @Query("SELECT p FROM Playlist p WHERE p.title LIKE %:keyword% OR p.description LIKE %:keyword%")
+    @Query("SELECT p FROM Playlist p WHERE p.playlistTitle LIKE %:keyword% OR p.description LIKE %:keyword%")
     List<Playlist> searchByKeyword(@Param("keyword") String keyword);
 
-    @Query("SELECT p FROM Playlist p ORDER BY SIZE(p.likes) DESC")
+    @Query("SELECT p FROM Playlist p ORDER BY SIZE(p.favorites) DESC")
     List<Playlist> findPopularPlaylists(Pageable pageable);
 }
 

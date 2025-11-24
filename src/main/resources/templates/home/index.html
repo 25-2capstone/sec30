@@ -24,16 +24,21 @@
       </div>
 
       <div class="track-grid" th:if="${tracks != null and !tracks.isEmpty()}">
-        <div class="track-card" th:each="track : ${tracks}">
+        <div class="track-card" th:each="track, iterStat : ${tracks}"
+             th:attr="data-track-id=${track.trackId},
+                      data-track-name=${track.name},
+                      data-artist=${track.artist},
+                      data-album=${track.album},
+                      data-image=${track.albumImage},
+                      data-preview=${track.previewUrl}"
+             onclick="playTrackDirectly(this)"
+             style="cursor: pointer;">
           <div class="track-card-image">
             <img th:src="${track.albumImage}"
                  th:alt="${track.name}"
                  onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
             <button class="track-card-play"
-                    th:attr="data-preview=${track.previewUrl != null ? track.previewUrl : ''},
-                             data-spotify-id=${track.spotifyId},
-                             data-track-name=${track.name}"
-                    onclick="playTrack(this)"></button>
+                    onclick="event.stopPropagation(); playTrackDirectly(this.parentElement.parentElement)"></button>
           </div>
           <div class="track-card-title" th:text="${track.name}">Track Name</div>
           <div class="track-card-artist" th:text="${track.artist}">Artist</div>
@@ -63,92 +68,48 @@
   </div>
 
   <th:block layout:fragment="scripts">
-    <audio id="global-player" style="display:none;"></audio>
     <script>
-      let currentPlayingButton = null;
+      function playTrackDirectly(element) {
+        alert('Function called!'); // 테스트용
+        console.log('=== playTrackDirectly called ===');
+        console.log('Element:', element);
 
-      function playTrack(button) {
-        const previewUrl = button.getAttribute('data-preview');
-        const spotifyId = button.getAttribute('data-spotify-id');
-        const trackName = button.getAttribute('data-track-name');
+        const trackData = {
+          trackId: element.getAttribute('data-track-id'),
+          name: element.getAttribute('data-track-name'),
+          artist: element.getAttribute('data-artist'),
+          album: element.getAttribute('data-album'),
+          albumImage: element.getAttribute('data-image'),
+          imageUri: element.getAttribute('data-image'),
+          previewUrl: element.getAttribute('data-preview'),
+          spotifyId: element.getAttribute('data-track-id')
+        };
 
-        console.log('=== Track Play Clicked ===');
-        console.log('Track Name:', trackName);
-        console.log('Preview URL:', previewUrl);
-        console.log('Spotify ID:', spotifyId);
+        console.log('Track data extracted:', trackData);
+        console.log('Preview URL:', trackData.previewUrl);
+        console.log('Preview URL type:', typeof trackData.previewUrl);
+        console.log('Preview URL length:', trackData.previewUrl ? trackData.previewUrl.length : 0);
 
-        // 미리듣기 URL이 없으면 Spotify로 이동
-        if (!previewUrl || previewUrl === '' || previewUrl === 'null') {
-          console.log('No preview available, opening Spotify...');
-          if (spotifyId && spotifyId !== 'null' && spotifyId !== '') {
-            window.open('https://open.spotify.com/track/' + spotifyId, '_blank');
-          } else {
-            alert('이 곡은 미리듣기를 제공하지 않습니다.');
-          }
-          return;
-        }
+        // 모든 트랙 카드 수집
+        const allTrackCards = document.querySelectorAll('.track-card');
+        const allTracksData = Array.from(allTrackCards).map(card => ({
+          trackId: card.getAttribute('data-track-id'),
+          name: card.getAttribute('data-track-name'),
+          artist: card.getAttribute('data-artist'),
+          album: card.getAttribute('data-album'),
+          albumImage: card.getAttribute('data-image'),
+          imageUri: card.getAttribute('data-image'),
+          previewUrl: card.getAttribute('data-preview'),
+          spotifyId: card.getAttribute('data-track-id')
+        }));
 
-        // 미리듣기 URL이 있으면 재생
-        console.log('Playing preview...');
-        const player = document.getElementById('global-player');
+        console.log('Total tracks in playlist:', allTracksData.length);
 
-        // 같은 버튼을 다시 클릭한 경우
-        if (currentPlayingButton === button) {
-          if (!player.paused) {
-            console.log('Pausing...');
-            player.pause();
-            button.style.background = '#1DB954';
-            button.innerHTML = '';
-            currentPlayingButton = null;
-          } else {
-            console.log('Resuming...');
-            player.play().catch(err => {
-              console.error('Play failed:', err);
-              alert('재생 중 오류가 발생했습니다.');
-            });
-            button.style.background = '#1ed760';
-            button.innerHTML = '⏸';
-          }
+        if (typeof musicPlayer !== 'undefined') {
+          musicPlayer.playTrack(trackData, allTracksData);
         } else {
-          // 다른 버튼을 클릭한 경우
-          console.log('Playing new track...');
-          if (currentPlayingButton) {
-            currentPlayingButton.style.background = '#1DB954';
-            currentPlayingButton.innerHTML = '';
-          }
-
-          player.src = previewUrl;
-          player.play().then(() => {
-            console.log('Playback started successfully');
-            button.style.background = '#1ed760';
-            button.innerHTML = '⏸';
-            currentPlayingButton = button;
-          }).catch(err => {
-            console.error('Play failed:', err);
-            alert('재생 중 오류가 발생했습니다.');
-          });
+          console.error('musicPlayer not found!');
         }
-
-        // 재생 종료 시 버튼 상태 초기화
-        player.onended = function() {
-          console.log('Playback ended');
-          if (currentPlayingButton) {
-            currentPlayingButton.style.background = '#1DB954';
-            currentPlayingButton.innerHTML = '';
-            currentPlayingButton = null;
-          }
-        };
-
-        // 에러 핸들러
-        player.onerror = function(e) {
-          console.error('Player error:', e);
-          alert('오디오 재생 중 오류가 발생했습니다.');
-          if (currentPlayingButton) {
-            currentPlayingButton.style.background = '#1DB954';
-            currentPlayingButton.innerHTML = '';
-            currentPlayingButton = null;
-          }
-        };
       }
     </script>
   </th:block>

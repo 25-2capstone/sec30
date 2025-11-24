@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TrackRepository extends JpaRepository<Track, Long> {
-    Optional<Track> findBySpotifyId(String spotifyId);
+public interface TrackRepository extends JpaRepository<Track, String> {
+    // trackId가 PK이므로 findById로 직접 검색 가능
 }
 

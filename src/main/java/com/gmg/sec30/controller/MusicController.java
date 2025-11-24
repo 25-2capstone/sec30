@@ -29,10 +29,31 @@ public class MusicController {
 
         // 인기 트랙 가져오기
         List<Track> tracks = spotifyService.getPopularTracks(12);
+
+        // 빈 결과면 데모 사용
         if (tracks.isEmpty()) {
             tracks = demoTracks();
         }
+
+        // JavaScript에서 사용할 수 있도록 Map으로 변환
+        List<java.util.Map<String, Object>> tracksForJs = tracks.stream()
+                .map(t -> {
+                    java.util.Map<String, Object> map = new java.util.HashMap<>();
+                    map.put("trackId", t.getTrackId());
+                    map.put("name", t.getTrackTitle());
+                    map.put("artist", t.getArtistName());
+                    map.put("album", t.getAlbumName());
+                    map.put("albumImage", t.getImageUri());
+                    map.put("imageUri", t.getImageUri());
+                    map.put("previewUrl", t.getPreviewUrl());
+                    map.put("spotifyId", t.getTrackId());
+                    return map;
+                })
+                .collect(java.util.stream.Collectors.toList());
+
+
         model.addAttribute("tracks", tracks);
+        model.addAttribute("tracksJson", tracksForJs);
 
         // 믹스 정보 (추후 구현 가능)
         // List<Mix> mixes = musicService.getRecommendedMixes();
@@ -62,33 +83,84 @@ public class MusicController {
         } else {
             tracks = spotifyService.getPopularTracks(20);
         }
+
+        // 빈 결과면 데모 사용
         if (tracks.isEmpty()) {
             tracks = demoTracks();
         }
+
+        // JavaScript에서 사용할 수 있도록 Map으로 변환
+        List<java.util.Map<String, Object>> tracksForJs = tracks.stream()
+                .map(t -> {
+                    java.util.Map<String, Object> map = new java.util.HashMap<>();
+                    map.put("trackId", t.getTrackId());
+                    map.put("name", t.getTrackTitle());
+                    map.put("artist", t.getArtistName());
+                    map.put("album", t.getAlbumName());
+                    map.put("albumImage", t.getImageUri());
+                    map.put("imageUri", t.getImageUri());
+                    map.put("previewUrl", t.getPreviewUrl());
+                    map.put("spotifyId", t.getTrackId());
+                    return map;
+                })
+                .collect(java.util.stream.Collectors.toList());
+
         model.addAttribute("tracks", tracks);
+        model.addAttribute("tracksJson", tracksForJs);
         model.addAttribute("trackCount", tracks.size());
         return "tracks";
     }
 
     private List<Track> demoTracks() {
         List<Track> list = new ArrayList<>();
+        // 재생 가능한 샘플 트랙 (실제 무료 음원)
         list.add(Track.builder()
-                .spotifyId("demo1")
-                .name("Demo Track 1")
-                .artist("Demo Artist")
-                .album("Demo Album")
-                .albumImage("https://via.placeholder.com/300x300?text=Demo1")
-                .durationMs(180000)
-                .previewUrl(null)
+                .trackId("demo1")
+                .trackTitle("Chill Vibes")
+                .artistName("Indie Artist")
+                .albumName("Relaxing Beats")
+                .imageUri("https://picsum.photos/seed/music1/300/300")
+                .previewUrl("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3")
                 .build());
         list.add(Track.builder()
-                .spotifyId("demo2")
-                .name("Demo Track 2")
-                .artist("Demo Artist")
-                .album("Demo Album")
-                .albumImage("https://via.placeholder.com/300x300?text=Demo2")
-                .durationMs(200000)
-                .previewUrl(null)
+                .trackId("demo2")
+                .trackTitle("Summer Dreams")
+                .artistName("Electronic Sounds")
+                .albumName("Feel Good Collection")
+                .imageUri("https://picsum.photos/seed/music2/300/300")
+                .previewUrl("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3")
+                .build());
+        list.add(Track.builder()
+                .trackId("demo3")
+                .trackTitle("Night Drive")
+                .artistName("Synth Wave")
+                .albumName("Midnight Sessions")
+                .imageUri("https://picsum.photos/seed/music3/300/300")
+                .previewUrl("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3")
+                .build());
+        list.add(Track.builder()
+                .trackId("demo4")
+                .trackTitle("Ocean Waves")
+                .artistName("Ambient Music")
+                .albumName("Nature Sounds")
+                .imageUri("https://picsum.photos/seed/music4/300/300")
+                .previewUrl("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3")
+                .build());
+        list.add(Track.builder()
+                .trackId("demo5")
+                .trackTitle("Urban Jungle")
+                .artistName("Hip Hop Beats")
+                .albumName("City Life")
+                .imageUri("https://picsum.photos/seed/music5/300/300")
+                .previewUrl("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3")
+                .build());
+        list.add(Track.builder()
+                .trackId("demo6")
+                .trackTitle("Morning Coffee")
+                .artistName("Jazz Ensemble")
+                .albumName("Smooth Jazz")
+                .imageUri("https://picsum.photos/seed/music6/300/300")
+                .previewUrl("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3")
                 .build());
         return list;
     }

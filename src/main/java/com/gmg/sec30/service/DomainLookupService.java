@@ -15,11 +15,12 @@ public class DomainLookupService {
     private final PlaylistRepository playlistRepository;
 
     public User requireUser(String username) {
-        return userRepository.findByUsername(username)
+        return userRepository.findByNickname(username)
+                .or(() -> userRepository.findByEmail(username))
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public Playlist requirePlaylist(Long id) {
+    public Playlist requirePlaylist(Integer id) {
         return playlistRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Playlist not found"));
     }

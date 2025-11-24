@@ -23,7 +23,7 @@ public class UserController {
     @PostMapping("/playlists/{playlistId}/comments")
     @ResponseBody
     public ResponseEntity<CommentResponseDto> createComment(
-            @PathVariable Long playlistId,
+            @PathVariable Integer playlistId,
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody CommentRequestDto dto) {
         CommentResponseDto comment = commentService.createComment(
@@ -34,7 +34,7 @@ public class UserController {
     @DeleteMapping("/comments/{id}")
     @ResponseBody
     public ResponseEntity<Void> deleteComment(
-            @PathVariable Long id,
+            @PathVariable Integer id,
             @AuthenticationPrincipal UserDetails userDetails) {
         commentService.deleteComment(id, userDetails.getUsername());
         return ResponseEntity.ok().build();
@@ -42,7 +42,7 @@ public class UserController {
 
     @GetMapping("/playlists/{playlistId}/comments")
     @ResponseBody
-    public ResponseEntity<List<CommentResponseDto>> getPlaylistComments(@PathVariable Long playlistId) {
+    public ResponseEntity<List<CommentResponseDto>> getPlaylistComments(@PathVariable Integer playlistId) {
         List<CommentResponseDto> comments = commentService.getPlaylistComments(playlistId);
         return ResponseEntity.ok(comments);
     }
@@ -58,7 +58,7 @@ public class UserController {
     @PostMapping("/playlists/{playlistId}/like")
     @ResponseBody
     public ResponseEntity<Void> toggleLike(
-            @PathVariable Long playlistId,
+            @PathVariable Integer playlistId,
             @AuthenticationPrincipal UserDetails userDetails) {
         likeService.toggleLike(playlistId, userDetails.getUsername());
         return ResponseEntity.ok().build();
@@ -67,7 +67,7 @@ public class UserController {
     @GetMapping("/playlists/{playlistId}/like/status")
     @ResponseBody
     public ResponseEntity<Boolean> isLiked(
-            @PathVariable Long playlistId,
+            @PathVariable Integer playlistId,
             @AuthenticationPrincipal UserDetails userDetails) {
         boolean isLiked = likeService.isLiked(playlistId, userDetails.getUsername());
         return ResponseEntity.ok(isLiked);

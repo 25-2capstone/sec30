@@ -2,6 +2,7 @@ package com.gmg.sec30.service;
 
 import com.gmg.sec30.entity.Track;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
@@ -91,19 +92,7 @@ public class SpotifyService {
      */
     public List<Track> getPopularTracks(int limit) {
         try {
-            // 인기 검색어들을 사용하여 트랙을 가져옵니다
-            String[] popularSearches = {
-                "top hits 2024",
-                "popular music",
-                "trending songs",
-                "viral hits",
-                "chart toppers"
-            };
-
-            // 랜덤하게 하나 선택
-            String query = popularSearches[(int) (System.currentTimeMillis() % popularSearches.length)];
-            log.info("Fetching popular tracks with query: {}", query);
-
+            String query = "top hits 2024";
             return searchTracks(query, limit);
         } catch (Exception e) {
             log.error("Error getting popular tracks", e);
@@ -223,15 +212,13 @@ public class SpotifyService {
                 ? trackJson.get("duration_ms").getAsInt()
                 : 0;
 
-        log.debug("Parsed track: {} - {} (preview: {})", artist, name, previewUrl != null ? "available" : "none");
 
         return Track.builder()
-                .spotifyId(id)
-                .name(name)
-                .artist(artist)
-                .album(albumName)
-                .albumImage(imageUrl)
-                .durationMs(durationMs)
+                .trackId(id)
+                .trackTitle(name)
+                .artistName(artist)
+                .albumName(albumName)
+                .imageUri(imageUrl)
                 .previewUrl(previewUrl)
                 .build();
     }

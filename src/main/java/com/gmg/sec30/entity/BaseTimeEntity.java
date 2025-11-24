@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 public abstract class BaseTimeEntity {
 
     @CreatedDate
-    @Column(name = "createdAt", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "create_at", nullable = false, updatable = false)
+    private LocalDateTime createAt;
 
     @LastModifiedDate
-    @Column(name = "updateAt") // ERD 필드명 'updateAt'
-    private LocalDateTime updatedAt;
+    @Column(name = "update_at")
+    private LocalDateTime updateAt;
 
-    @Column(name = "deleteAt") // ERD 필드명 'deleteAt'
-    private LocalDateTime deletedAt;
+    @Column(name = "delete_at")
+    private LocalDateTime deleteAt;
 }

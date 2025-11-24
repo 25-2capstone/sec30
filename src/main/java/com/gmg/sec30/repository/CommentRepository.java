@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findByPlaylistOrderByCreatedAtDesc(Playlist playlist);
-    List<Comment> findByUserOrderByCreatedAtDesc(User user);
+public interface CommentRepository extends JpaRepository<Comment, Integer> {
+    List<Comment> findByPlaylistOrderByCreateAtDesc(Playlist playlist);
+    List<Comment> findByUserOrderByCreateAtDesc(User user);
 }
 

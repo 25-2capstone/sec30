@@ -13,21 +13,21 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class CommentResponseDto {
-    private Long id;
+    private Integer id;
     private String content;
     private String username;
-    private Long playlistId;
+    private Integer playlistId;
     private String playlistTitle;
     private LocalDateTime createdAt;
 
     public static CommentResponseDto from(Comment comment) {
         return CommentResponseDto.builder()
-                .id(comment.getId())
+                .id(comment.getCommentId())
                 .content(comment.getContent())
-                .username(comment.getUser().getUsername())
-                .playlistId(comment.getPlaylist().getId())
-                .playlistTitle(comment.getPlaylist().getTitle())
-                .createdAt(comment.getCreatedAt())
+                .username(comment.getUser().getNickname())
+                .playlistId(comment.getPlaylist().getPlaylistId())
+                .playlistTitle(comment.getPlaylist().getPlaylistTitle())
+                .createdAt(comment.getCreateAt())
                 .build();
     }
 }
