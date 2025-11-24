@@ -26,23 +26,23 @@
       <div class="track-grid" th:if="${tracks != null and !tracks.isEmpty()}">
         <div class="track-card" th:each="track, iterStat : ${tracks}"
              th:attr="data-track-id=${track.trackId},
-                      data-track-name=${track.name},
-                      data-artist=${track.artist},
-                      data-album=${track.album},
-                      data-image=${track.albumImage},
+                      data-track-name=${track.trackTitle},
+                      data-artist=${track.artistName},
+                      data-album=${track.albumName},
+                      data-image=${track.imageUri},
                       data-preview=${track.previewUrl}"
              onclick="playTrackDirectly(this)"
              style="cursor: pointer;">
           <div class="track-card-image">
-            <img th:src="${track.albumImage}"
-                 th:alt="${track.name}"
+            <img th:src="${track.imageUri}"
+                 th:alt="${track.trackTitle}"
                  onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
             <button class="track-card-play"
                     onclick="event.stopPropagation(); playTrackDirectly(this.parentElement.parentElement)"></button>
           </div>
-          <div class="track-card-title" th:text="${track.name}">Track Name</div>
-          <div class="track-card-artist" th:text="${track.artist}">Artist</div>
-          <div style="color: var(--muted); font-size: 12px; margin-top: 4px;" th:text="${track.album}">Album</div>
+          <div class="track-card-title" th:text="${track.trackTitle}">Track Name</div>
+          <div class="track-card-artist" th:text="${track.artistName}">Artist</div>
+          <div style="color: var(--muted); font-size: 12px; margin-top: 4px;" th:text="${track.albumName}">Album</div>
         </div>
       </div>
 
@@ -68,7 +68,6 @@
   <th:block layout:fragment="scripts">
     <script>
       function playTrackDirectly(element) {
-        alert('Function called!'); // 테스트용
         console.log('=== playTrackDirectly called ===');
         console.log('Element:', element);
 

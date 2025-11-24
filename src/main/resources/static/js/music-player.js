@@ -48,8 +48,14 @@ const musicPlayer = {
         }
 
         // 미리듣기 URL이 없으면 Spotify로
-        if (!track.previewUrl || track.previewUrl === 'null' || track.previewUrl === '' || track.previewUrl === null) {
-            console.log('❌ No preview URL available, opening Spotify');
+        const hasValidPreviewUrl = track.previewUrl &&
+                                   track.previewUrl !== 'null' &&
+                                   track.previewUrl !== 'undefined' &&
+                                   track.previewUrl !== '' &&
+                                   track.previewUrl.startsWith('http');
+
+        if (!hasValidPreviewUrl) {
+            console.log('❌ No valid preview URL available, opening Spotify');
             console.log('Preview URL value:', track.previewUrl);
             this.openSpotify();
             return;

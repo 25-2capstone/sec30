@@ -23,49 +23,28 @@ public class MusicController {
     private final PlaylistService playlistService;
     private final SpotifyService spotifyService;
 
-    @GetMapping({"/", "/home"})
-    public String home(Model model) {
-        model.addAttribute("title", "홈");
+    @GetMapping("/")
+    public String home() {
+        // 홈 페이지는 tracks로 리다이렉트
+        return "redirect:/tracks";
+    }
 
-        // 인기 트랙 가져오기
-        List<Track> tracks = spotifyService.getPopularTracks(12);
-
-        // 빈 결과면 데모 사용
-        if (tracks.isEmpty()) {
-            tracks = demoTracks();
-        }
-
-        // JavaScript에서 사용할 수 있도록 Map으로 변환
-        List<java.util.Map<String, Object>> tracksForJs = tracks.stream()
-                .map(t -> {
-                    java.util.Map<String, Object> map = new java.util.HashMap<>();
-                    map.put("trackId", t.getTrackId());
-                    map.put("name", t.getTrackTitle());
-                    map.put("artist", t.getArtistName());
-                    map.put("album", t.getAlbumName());
-                    map.put("albumImage", t.getImageUri());
-                    map.put("imageUri", t.getImageUri());
-                    map.put("previewUrl", t.getPreviewUrl());
-                    map.put("spotifyId", t.getTrackId());
-                    return map;
-                })
-                .collect(java.util.stream.Collectors.toList());
-
-
-        model.addAttribute("tracks", tracks);
-        model.addAttribute("tracksJson", tracksForJs);
-
-        // 믹스 정보 (추후 구현 가능)
-        // List<Mix> mixes = musicService.getRecommendedMixes();
-        // model.addAttribute("mixes", mixes);
-
-        return "home/index";
+    @GetMapping("/home")
+    public String homeAlias() {
+        // /home도 tracks로 리다이렉트
+        return "redirect:/tracks";
     }
 
     @GetMapping("/login")
-    public String login(@RequestParam(value = "error", required = false) String error, Model model) {
+    public String login(
+            @RequestParam(value = "error", required = false) String error,
+            @RequestParam(value = "success", required = false) String success,
+            Model model) {
         if (error != null) {
             model.addAttribute("error", "아이디 또는 비밀번호가 올바르지 않습니다.");
+        }
+        if (success != null) {
+            model.addAttribute("success", "회원가입이 완료되었습니다. 로그인해주세요.");
         }
         model.addAttribute("title", "로그인");
         return "login";

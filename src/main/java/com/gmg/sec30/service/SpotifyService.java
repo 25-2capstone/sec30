@@ -92,8 +92,23 @@ public class SpotifyService {
      */
     public List<Track> getPopularTracks(int limit) {
         try {
-            String query = "top hits 2024";
-            return searchTracks(query, limit);
+            // 여러 인기 검색어를 시도하여 미리듣기 URL이 있는 트랙을 찾음
+            String[] queries = {"year:2024", "top hits 2024", "viral hits", "popular songs"};
+
+            for (String query : queries) {
+                List<Track> tracks = searchTracks(query, limit);
+                long tracksWithPreview = tracks.stream()
+                        .filter(t -> t.getPreviewUrl() != null && !t.getPreviewUrl().isEmpty())
+                        .count();
+
+                if (tracksWithPreview >= limit / 2) {
+                    log.info("Found {} tracks with preview using query: {}", tracksWithPreview, query);
+                    return tracks;
+                }
+            }
+
+            // 모든 검색어를 시도했지만 충분하지 않으면 첫 번째 결과 반환
+            return searchTracks(queries[0], limit);
         } catch (Exception e) {
             log.error("Error getting popular tracks", e);
             return new ArrayList<>();
@@ -111,8 +126,10 @@ public class SpotifyService {
         try {
             String token = getAccessToken();
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
-            String url = String.format("https://api.spotify.com/v1/search?q=%s&type=track&limit=%d",
-                    encodedQuery, limit);
+            // 미리듣기 URL이 있는 트랙을 더 많이 얻기 위해 요청 수를 늘림
+            int requestLimit = Math.min(limit * 3, 50); // 최대 50개까지
+            String url = String.format("https://api.spotify.com/v1/search?q=%s&type=track&limit=%d&market=KR",
+                    encodedQuery, requestLimit);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))
@@ -123,7 +140,24 @@ public class SpotifyService {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                return parseTracksFromSearch(response.body());
+                List<Track> allTracks = parseTracksFromSearch(response.body());
+
+                // preview URL이 있는 트랙만 필터링
+                List<Track> tracksWithPreview = allTracks.stream()
+                        .filter(t -> t.getPreviewUrl() != null && !t.getPreviewUrl().isEmpty())
+                        .limit(limit)
+                        .collect(java.util.stream.Collectors.toList());
+
+                log.info("Found {} tracks with preview URL out of {} total tracks",
+                        tracksWithPreview.size(), allTracks.size());
+
+                // preview URL이 있는 트랙이 충분하지 않으면 전체 트랙 반환
+                if (tracksWithPreview.size() < limit / 2) {
+                    log.warn("Not enough tracks with preview URL, returning all tracks");
+                    return allTracks.stream().limit(limit).collect(java.util.stream.Collectors.toList());
+                }
+
+                return tracksWithPreview;
             } else {
                 log.error("Failed to search tracks: {} - {}", response.statusCode(), response.body());
                 return new ArrayList<>();
