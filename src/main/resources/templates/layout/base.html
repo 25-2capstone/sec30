@@ -26,6 +26,9 @@
     </div>
   </div>
 
+  <!-- YouTube Player 컨테이너 (숨김) -->
+  <div id="youtube-player-container" style="position: fixed; top: -9999px; left: -9999px;"></div>
+
   <!-- 고정 하단 뮤직 플레이어 -->
   <div id="music-player" class="music-player" style="display: none;">
     <audio id="audio-element"></audio>
@@ -76,6 +79,9 @@
       </div>
     </div>
   </div>
+
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 
   <script th:src="@{/js/music-player.js}"></script>
   <th:block layout:fragment="scripts"></th:block>

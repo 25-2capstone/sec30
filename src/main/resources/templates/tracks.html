@@ -24,25 +24,26 @@
 
       <!-- 트랙 그리드 -->
       <div class="track-grid" th:if="${tracks != null and !tracks.isEmpty()}">
-        <div class="track-card" th:each="track, iterStat : ${tracks}"
+        <div class="track-card" th:each="track, iterStat : ${tracksJson}"
              th:attr="data-track-id=${track.trackId},
-                      data-track-name=${track.trackTitle},
-                      data-artist=${track.artistName},
-                      data-album=${track.albumName},
-                      data-image=${track.imageUri},
-                      data-preview=${track.previewUrl}"
+                      data-track-name=${track.name},
+                      data-artist=${track.artist},
+                      data-album=${track.album},
+                      data-image=${track.albumImage},
+                      data-preview=${track.previewUrl},
+                      data-youtube-id=${track.youtubeVideoId}"
              onclick="playTrackDirectly(this)"
              style="cursor: pointer;">
           <div class="track-card-image">
-            <img th:src="${track.imageUri}"
-                 th:alt="${track.trackTitle}"
+            <img th:src="${track.albumImage}"
+                 th:alt="${track.name}"
                  onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
             <button class="track-card-play"
                     onclick="event.stopPropagation(); playTrackDirectly(this.parentElement.parentElement)"></button>
           </div>
-          <div class="track-card-title" th:text="${track.trackTitle}">Track Name</div>
-          <div class="track-card-artist" th:text="${track.artistName}">Artist</div>
-          <div style="color: var(--muted); font-size: 12px; margin-top: 4px;" th:text="${track.albumName}">Album</div>
+          <div class="track-card-title" th:text="${track.name}">Track Name</div>
+          <div class="track-card-artist" th:text="${track.artist}">Artist</div>
+          <div style="color: var(--muted); font-size: 12px; margin-top: 4px;" th:text="${track.album}">Album</div>
         </div>
       </div>
 
@@ -79,13 +80,13 @@
           albumImage: element.getAttribute('data-image'),
           imageUri: element.getAttribute('data-image'),
           previewUrl: element.getAttribute('data-preview'),
-          spotifyId: element.getAttribute('data-track-id')
+          spotifyId: element.getAttribute('data-track-id'),
+          youtubeVideoId: element.getAttribute('data-youtube-id')
         };
 
         console.log('Track data extracted:', trackData);
         console.log('Preview URL:', trackData.previewUrl);
-        console.log('Preview URL type:', typeof trackData.previewUrl);
-        console.log('Preview URL length:', trackData.previewUrl ? trackData.previewUrl.length : 0);
+        console.log('YouTube Video ID:', trackData.youtubeVideoId);
 
         // 모든 트랙 카드 수집
         const allTrackCards = document.querySelectorAll('.track-card');
@@ -97,7 +98,8 @@
           albumImage: card.getAttribute('data-image'),
           imageUri: card.getAttribute('data-image'),
           previewUrl: card.getAttribute('data-preview'),
-          spotifyId: card.getAttribute('data-track-id')
+          spotifyId: card.getAttribute('data-track-id'),
+          youtubeVideoId: card.getAttribute('data-youtube-id')
         }));
 
         console.log('Total tracks in playlist:', allTracksData.length);

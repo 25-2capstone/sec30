@@ -4,6 +4,7 @@ import com.gmg.sec30.dto.response.PlaylistResponseDto;
 import com.gmg.sec30.entity.Track;
 import com.gmg.sec30.service.PlaylistService;
 import com.gmg.sec30.service.SpotifyService;
+import com.gmg.sec30.service.YouTubeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ public class MusicController {
 
     private final PlaylistService playlistService;
     private final SpotifyService spotifyService;
+    private final YouTubeService youTubeService;
 
     @GetMapping("/")
     public String home() {
@@ -80,6 +82,11 @@ public class MusicController {
                     map.put("imageUri", t.getImageUri());
                     map.put("previewUrl", t.getPreviewUrl());
                     map.put("spotifyId", t.getTrackId());
+
+                    // YouTube 비디오 ID 추가 (전체 곡 재생용)
+                    String youtubeVideoId = youTubeService.searchVideoId(t.getTrackTitle(), t.getArtistName());
+                    map.put("youtubeVideoId", youtubeVideoId);
+
                     return map;
                 })
                 .collect(java.util.stream.Collectors.toList());
