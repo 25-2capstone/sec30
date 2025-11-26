@@ -27,8 +27,8 @@ public class SecurityConfig {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 // CSS, JS, 이미지 등 정적 파일
                 .requestMatchers("/css/**", "/js/**", "/img/**", "/images/**").permitAll()
-                // 메인/홈/에러/파비콘/로그인 공개
-                .requestMatchers("/", "/home", "/error", "/favicon.ico", "/login").permitAll()
+                // 메인/홈/에러/파비콘/로그인/회원가입 공개
+                .requestMatchers("/", "/home", "/error", "/favicon.ico", "/login", "/register").permitAll()
                 // 공개 조회용 (음악 검색/인기 트랙/플레이리스트 목록/상세) - 로그인 없이 바로 감상 가능
                 .requestMatchers(HttpMethod.GET,
                         "/tracks", "/tracks/**",

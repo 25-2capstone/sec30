@@ -52,6 +52,17 @@ public class MusicController {
         return "login";
     }
 
+    @GetMapping("/register")
+    public String register(
+            @RequestParam(value = "error", required = false) String error,
+            Model model) {
+        if (error != null) {
+            model.addAttribute("error", "회원가입 중 오류가 발생했습니다.");
+        }
+        model.addAttribute("title", "회원가입");
+        return "register";
+    }
+
     @GetMapping("/tracks")
     public String tracks(@RequestParam(value = "query", required = false) String query, Model model) {
         List<PlaylistResponseDto> popularPlaylists = playlistService.getPopularPlaylists(PageRequest.of(0, 10));
