@@ -1,0 +1,32 @@
+<div th:fragment="sidebar" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <div class="logo">🎵 Sec30</div>
+  <nav class="nav">
+    <a href="/tracks" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-text">홈</span>
+    </a>
+    <a href="/playlist" class="nav-item">
+      <span class="nav-icon">🎵</span>
+      <span class="nav-text">플레이리스트</span>
+    </a>
+    <a href="/mypage" class="nav-item" sec:authorize="isAuthenticated()">
+      <span class="nav-icon">📚</span>
+      <span class="nav-text">내 라이브러리</span>
+    </a>
+  </nav>
+  <div class="playlists" sec:authorize="isAuthenticated()">
+    <button class="btn-create" onclick="location.href='/playlist/create'">
+      <span>➕</span> 플레이리스트 만들기
+    </button>
+  </div>
+  <div class="auth-area">
+    <div sec:authorize="!isAuthenticated()" class="login-prompt">
+      <a href="/login" class="btn-login">로그인</a>
+    </div>
+    <div sec:authorize="isAuthenticated()" class="user-profile">
+      <span class="user-name" sec:authentication="name">User</span>
+      <a href="/logout" class="btn-logout">로그아웃</a>
+    </div>
+  </div>
+</div>
+

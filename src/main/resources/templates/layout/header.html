@@ -1,0 +1,19 @@
+<div th:fragment="header" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <div class="search-wrap">
+    <form action="/tracks" method="get">
+      <input name="query"
+             th:value="${searchQuery}"
+             placeholder="아티스트, 앨범, 혹은 곡 검색"
+             class="search-input"
+             autocomplete="off" />
+      <button type="submit" class="search-btn">🔍</button>
+    </form>
+  </div>
+  <div class="user-area">
+    <!-- 사용자 아이콘 클릭 시 마이페이지로 이동 (로그인 안 되어 있으면 로그인 페이지로 리다이렉트됨) -->
+    <a href="/mypage" style="text-decoration: none; color: inherit;">
+      <div class="user-icon">S</div>
+    </a>
+  </div>
+</div>
+

@@ -15,19 +15,19 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@SQLDelete(sql = "UPDATE users SET deleteAt = CURRENT_TIMESTAMP WHERE userId = ?")
-@Where(clause = "deleteAt IS NULL")
+@SQLDelete(sql = "UPDATE users SET delete_at = CURRENT_TIMESTAMP WHERE user_id = ?")
+@Where(clause = "delete_at IS NULL")
 public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId")
+    @Column(name = "user_id")
     private Integer userId;
 
-    @Column(name = "email", length = 30, nullable = false, unique = true)
+    @Column(name = "email", length = 50, nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", length = 30, nullable = false)
+    @Column(name = "password", length = 100, nullable = false)
     private String password;
 
     @Column(name = "nickname", length = 20, nullable = false, unique = true)

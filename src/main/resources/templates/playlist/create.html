@@ -1,0 +1,146 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+  <title>플레이리스트 만들기 - Sec30 Music</title>
+  <style>
+    .create-playlist-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .create-playlist-title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 32px;
+      color: var(--text-primary);
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: inherit;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: scale(1.02);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-hover);
+    }
+
+    .helper-text {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div layout:fragment="content">
+    <div class="create-playlist-container">
+      <h1 class="create-playlist-title">플레이리스트 만들기</h1>
+
+      <form action="/playlist/create" method="post" th:action="@{/playlist/create}">
+        <div class="form-group">
+          <label class="form-label" for="name">플레이리스트 이름 *</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class="form-input"
+            placeholder="나만의 플레이리스트"
+            required
+            maxlength="100"
+          />
+          <div class="helper-text">최대 100자까지 입력할 수 있습니다</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="description">설명</label>
+          <textarea
+            id="description"
+            name="description"
+            class="form-textarea"
+            placeholder="이 플레이리스트에 대한 설명을 입력하세요"
+            maxlength="500"
+          ></textarea>
+          <div class="helper-text">최대 500자까지 입력할 수 있습니다</div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="history.back()">
+            취소
+          </button>
+          <button type="submit" class="btn btn-primary">
+            플레이리스트 만들기
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
+

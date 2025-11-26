@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+.idea/
+
+### Environment Variables ###
+.env
+*.env
+

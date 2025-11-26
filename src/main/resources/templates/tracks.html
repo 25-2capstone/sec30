@@ -1,0 +1,117 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+  <title>음악 검색 - Sec30 Music</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <!-- 검색 결과 헤더 -->
+    <section class="home-section">
+      <div class="section-header">
+        <h2 class="section-title" th:text="${searchQuery != null and !searchQuery.isEmpty()} ? '검색 결과: ' + ${searchQuery} : '인기 트랙'">
+          인기 트랙
+        </h2>
+        <div style="color: var(--muted); font-size: 14px;" th:if="${trackCount != null}">
+          <span th:text="${trackCount} + '개의 트랙'">0개의 트랙</span>
+          <span th:if="${tracksWithPreviewCount != null}"
+                style="margin-left: 12px; color: #1DB954;"
+                th:text="'(미리듣기 가능: ' + ${tracksWithPreviewCount} + '개)'">
+          </span>
+        </div>
+      </div>
+
+      <!-- 트랙 그리드 -->
+      <div class="track-grid" th:if="${tracks != null and !tracks.isEmpty()}">
+        <div class="track-card" th:each="track, iterStat : ${tracksJson}"
+             th:attr="data-track-id=${track.trackId},
+                      data-track-name=${track.name},
+                      data-artist=${track.artist},
+                      data-album=${track.album},
+                      data-image=${track.albumImage},
+                      data-preview=${track.previewUrl},
+                      data-youtube-id=${track.youtubeVideoId}"
+             onclick="playTrackDirectly(this)"
+             style="cursor: pointer;">
+          <div class="track-card-image">
+            <img th:src="${track.albumImage}"
+                 th:alt="${track.name}"
+                 onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
+            <button class="track-card-play"
+                    onclick="event.stopPropagation(); playTrackDirectly(this.parentElement.parentElement)"></button>
+          </div>
+          <div class="track-card-title" th:text="${track.name}">Track Name</div>
+          <div class="track-card-artist" th:text="${track.artist}">Artist</div>
+          <div style="color: var(--muted); font-size: 12px; margin-top: 4px;" th:text="${track.album}">Album</div>
+        </div>
+      </div>
+
+      <!-- 빈 상태 -->
+      <div class="empty-state" th:if="${tracks == null or tracks.isEmpty()}">
+        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-title">검색 결과가 없습니다</div>
+        <div class="empty-state-desc" th:if="${searchQuery != null and !searchQuery.isEmpty()}">
+          "<span th:text="${searchQuery}"></span>"에 대한 검색 결과가 없습니다.
+        </div>
+        <div class="empty-state-desc" th:if="${searchQuery == null or searchQuery.isEmpty()}">
+          음악을 검색해보세요
+        </div>
+      </div>
+    </section>
+
+    <!-- 에러 메시지 -->
+    <div th:if="${error}" style="text-align: center; padding: 32px; background: rgba(255,0,0,0.1); border-radius: 12px; margin-top: 24px;">
+      <p style="color: #ff6b6b; font-size: 16px;" th:text="${error}">오류 메시지</p>
+    </div>
+  </div>
+
+  <th:block layout:fragment="scripts">
+    <script>
+      function playTrackDirectly(element) {
+        console.log('=== playTrackDirectly called ===');
+        console.log('Element:', element);
+
+        const trackData = {
+          trackId: element.getAttribute('data-track-id'),
+          name: element.getAttribute('data-track-name'),
+          artist: element.getAttribute('data-artist'),
+          album: element.getAttribute('data-album'),
+          albumImage: element.getAttribute('data-image'),
+          imageUri: element.getAttribute('data-image'),
+          previewUrl: element.getAttribute('data-preview'),
+          spotifyId: element.getAttribute('data-track-id'),
+          youtubeVideoId: element.getAttribute('data-youtube-id')
+        };
+
+        console.log('Track data extracted:', trackData);
+        console.log('Preview URL:', trackData.previewUrl);
+        console.log('YouTube Video ID:', trackData.youtubeVideoId);
+
+        // 모든 트랙 카드 수집
+        const allTrackCards = document.querySelectorAll('.track-card');
+        const allTracksData = Array.from(allTrackCards).map(card => ({
+          trackId: card.getAttribute('data-track-id'),
+          name: card.getAttribute('data-track-name'),
+          artist: card.getAttribute('data-artist'),
+          album: card.getAttribute('data-album'),
+          albumImage: card.getAttribute('data-image'),
+          imageUri: card.getAttribute('data-image'),
+          previewUrl: card.getAttribute('data-preview'),
+          spotifyId: card.getAttribute('data-track-id'),
+          youtubeVideoId: card.getAttribute('data-youtube-id')
+        }));
+
+        console.log('Total tracks in playlist:', allTracksData.length);
+
+        if (typeof musicPlayer !== 'undefined') {
+          musicPlayer.playTrack(trackData, allTracksData);
+        } else {
+          console.error('musicPlayer not found!');
+        }
+      }
+    </script>
+  </th:block>
+</body>
+</html>
+

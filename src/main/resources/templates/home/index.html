@@ -1,0 +1,117 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+  <title>홈 - Sec30 Music</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-card">
+        <h1>Discover Weekly</h1>
+        <p>당신만을 위한 새로운 음악 발견</p>
+        <button class="play-btn" onclick="window.location.href='/tracks'">지금 듣기</button>
+      </div>
+    </section>
+
+    <!-- 인기 트랙 섹션 -->
+    <section class="home-section">
+      <div class="section-header">
+        <h2 class="section-title">오늘의 인기 트랙</h2>
+        <a href="/tracks" class="section-link">모두 보기 →</a>
+      </div>
+
+      <div class="track-grid" th:if="${tracks != null and !tracks.isEmpty()}">
+        <div class="track-card" th:each="track, iterStat : ${tracks}"
+             th:attr="data-track-id=${track.trackId},
+                      data-track-name=${track.trackTitle},
+                      data-artist=${track.artistName},
+                      data-album=${track.albumName},
+                      data-image=${track.imageUri},
+                      data-preview=${track.previewUrl}"
+             onclick="playTrackDirectly(this)"
+             style="cursor: pointer;">
+          <div class="track-card-image">
+            <img th:src="${track.imageUri}"
+                 th:alt="${track.trackTitle}"
+                 onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
+            <button class="track-card-play"
+                    onclick="event.stopPropagation(); playTrackDirectly(this.parentElement.parentElement)"></button>
+          </div>
+          <div class="track-card-title" th:text="${track.trackTitle}">Track Name</div>
+          <div class="track-card-artist" th:text="${track.artistName}">Artist</div>
+        </div>
+      </div>
+
+      <div class="empty-state" th:if="${tracks == null or tracks.isEmpty()}">
+        <div class="empty-state-icon">🎵</div>
+        <div class="empty-state-title">트랙이 없습니다</div>
+        <div class="empty-state-desc">음악을 검색하거나 플레이리스트를 만들어보세요</div>
+      </div>
+    </section>
+
+    <!-- 추천 믹스 섹션 -->
+    <section class="recommended" th:if="${mixes != null and !mixes.isEmpty()}">
+      <h2>회원님을 위한 맞춤 믹스</h2>
+      <div class="cards">
+        <div class="card" th:each="mix : ${mixes}">
+          <img th:src="${mix.imageUrl}"
+               th:alt="${mix.title}"
+               onerror="this.src='https://via.placeholder.com/300x300?text=Mix'">
+          <div class="card-title" th:text="${mix.title}">Mix Title</div>
+          <div class="card-subtitle" th:text="${mix.description}">Mix Description</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <th:block layout:fragment="scripts">
+    <script>
+      function playTrackDirectly(element) {
+        console.log('=== playTrackDirectly called ===');
+        console.log('Element:', element);
+
+        const trackData = {
+          trackId: element.getAttribute('data-track-id'),
+          name: element.getAttribute('data-track-name'),
+          artist: element.getAttribute('data-artist'),
+          album: element.getAttribute('data-album'),
+          albumImage: element.getAttribute('data-image'),
+          imageUri: element.getAttribute('data-image'),
+          previewUrl: element.getAttribute('data-preview'),
+          spotifyId: element.getAttribute('data-track-id')
+        };
+
+        console.log('Track data extracted:', trackData);
+        console.log('Preview URL:', trackData.previewUrl);
+        console.log('Preview URL type:', typeof trackData.previewUrl);
+        console.log('Preview URL length:', trackData.previewUrl ? trackData.previewUrl.length : 0);
+
+        // 모든 트랙 카드 수집
+        const allTrackCards = document.querySelectorAll('.track-card');
+        const allTracksData = Array.from(allTrackCards).map(card => ({
+          trackId: card.getAttribute('data-track-id'),
+          name: card.getAttribute('data-track-name'),
+          artist: card.getAttribute('data-artist'),
+          album: card.getAttribute('data-album'),
+          albumImage: card.getAttribute('data-image'),
+          imageUri: card.getAttribute('data-image'),
+          previewUrl: card.getAttribute('data-preview'),
+          spotifyId: card.getAttribute('data-track-id')
+        }));
+
+        console.log('Total tracks in playlist:', allTracksData.length);
+
+        if (typeof musicPlayer !== 'undefined') {
+          musicPlayer.playTrack(trackData, allTracksData);
+        } else {
+          console.error('musicPlayer not found!');
+        }
+      }
+    </script>
+  </th:block>
+</body>
+</html>
+

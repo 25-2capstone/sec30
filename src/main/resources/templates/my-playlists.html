@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Playlists - MusicFlow</title>
+    <link rel="stylesheet" th:href="@{/css/my-playlists.css}">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <span class="logo-text">MusicFlow</span>
+            </div>
+            <nav class="nav">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/explore" class="nav-link">Explore</a>
+                <a href="/community" class="nav-link">Community</a>
+            </nav>
+            <div class="header-right">
+                <div class="search-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8634 16.3741C19.1616 14.7849 19.94 12.7634 19.94 10.5579C19.94 5.41887 15.7138 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.43937 3.27893 10.533 3.27893C14.6266 3.27893 17.94 6.55226 17.94 10.5579C17.94 14.5636 14.6266 17.8369 10.533 17.8369C6.43937 17.8369 3.12598 14.5636 3.12598 10.5579Z"/>
+                    </svg>
+                    <input type="text" placeholder="Search">
+                </div>
+                <button class="icon-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                    </svg>
+                </button>
+                <div class="user-avatar"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 레이아웃 -->
+    <div class="main-layout">
+        <!-- 왼쪽 사이드바 -->
+        <aside class="sidebar">
+            <div class="profile-section">
+                <div class="profile-avatar-large"></div>
+                <h2 class="profile-name">Alex Johnson</h2>
+                <button class="btn-edit-profile">Edit Profile</button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/playlists/my" class="sidebar-link active">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
+                    </svg>
+                    <span>My Playlists</span>
+                </a>
+                <a href="/liked-songs" class="sidebar-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <span>Liked Songs</span>
+                </a>
+                <a href="/favorite-playlists" class="sidebar-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/>
+                    </svg>
+                    <span>Favorite Playlists</span>
+                </a>
+                <a href="/settings" class="sidebar-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                    </svg>
+                    <span>Account Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 메인 콘텐츠 -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1 class="page-title">My Playlists</h1>
+                <p class="page-subtitle">Playlists you've created.</p>
+            </div>
+
+            <!-- 플레이리스트 그리드 -->
+            <div class="playlist-grid">
+                <div class="playlist-card" th:each="playlist : ${playlists.content}">
+                    <a th:href="@{/playlists/{id}(id=${playlist.id})}" class="playlist-card-link">
+                        <div class="playlist-card-image">
+                            <img th:src="${playlist.coverImage}"
+                                 th:alt="${playlist.title}"
+                                 src="https://via.placeholder.com/300"
+                                 alt="Playlist Cover">
+                        </div>
+                        <div class="playlist-card-content">
+                            <h3 class="playlist-card-title" th:text="${playlist.title}">Chill Vibes Mix</h3>
+                            <p class="playlist-card-count" th:text="${playlist.trackCount} + ' songs'">32 songs</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="pagination" th:if="${playlists.totalPages > 1}">
+                <button class="pagination-btn"
+                        th:disabled="${currentPage == 0}"
+                        onclick="window.location.href='?page=' + (parseInt('[[${currentPage}]]') - 1)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    </svg>
+                </button>
+
+                <span class="pagination-page" th:each="i : ${#numbers.sequence(0, playlists.totalPages - 1)}">
+                    <button class="pagination-number"
+                            th:classappend="${i == currentPage} ? 'active' : ''"
+                            th:text="${i + 1}"
+                            th:onclick="'window.location.href=\'?page=' + ${i} + '\''">
+                        1
+                    </button>
+                </span>
+
+                <button class="pagination-btn"
+                        th:disabled="${currentPage >= playlists.totalPages - 1}"
+                        onclick="window.location.href='?page=' + (parseInt('[[${currentPage}]]') + 1)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                    </svg>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Playlist 버튼 (플로팅) -->
+    <button class="btn-create-playlist" onclick="showCreateModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+        Create Playlist
+    </button>
+
+    <script th:src="@{/js/my-playlists.js}"></script>
+</body>
+</html>
+

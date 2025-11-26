@@ -15,13 +15,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@SQLDelete(sql = "UPDATE comment SET deleteAt = CURRENT_TIMESTAMP WHERE commentId = ?")
-@Where(clause = "deleteAt IS NULL")
+@SQLDelete(sql = "UPDATE comment SET delete_at = CURRENT_TIMESTAMP WHERE comment_id = ?")
+@Where(clause = "delete_at IS NULL")
 public class Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "commentId")
+    @Column(name = "comment_id")
     private Integer commentId;
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
@@ -30,16 +30,16 @@ public class Comment extends BaseTimeEntity {
     // --- 연관관계 매핑 ---
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "playlistId", nullable = false)
+    @JoinColumn(name = "playlist_id", nullable = false)
     private Playlist playlist;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // 대댓글 (셀프 조인)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parentId")
+    @JoinColumn(name = "parent_id")
     private Comment parent;
 
     @Builder.Default
