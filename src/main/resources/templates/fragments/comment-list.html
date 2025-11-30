@@ -1,0 +1,53 @@
+<div id="comments-container" th:fragment="comments-list">
+    <div th:each="item : ${comments}" th:if="${item.parent == null}">
+        <div class="comment-container">
+            <section>
+                <!-- ❌ id="comment-id" 제거 (중복되므로 불필요) -->
+                <strong th:text="${item.author}"></strong>
+                <span th:text="${#temporals.format(item.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
+                <p th:text="${item.comment}"></p>
+            </section>
+
+            <div class="comment-actions">
+                <!-- ✅ onclick으로 명시적 호출 추가 -->
+                <button type="button" class="comment-update-btn"
+                        th:data-reply-id="${item.id}"
+                        th:onclick="|openCommentUpdatePopup(${item.id})|">
+                    수정
+                </button>
+                <form style="display:inline;">
+                    <button type="button" class="comment-delete-btn" th:data-reply-id="${item.id}">삭제</button>
+                </form>
+                <button type="button" class="reply-toggle-btn" th:data-comment-id="${item.id}">대댓글</button>
+            </div>
+
+            <div class="reply-form-container" style="display:none; margin-top: 10px;">
+                <form class="reply-form">
+                    <!-- ✅ hidden input 추가 -->
+                    <input type="hidden" name="parent-id" th:value="${item.id}">
+
+                    <label>
+                        <textarea name="reply-content" placeholder="대댓글 작성" required></textarea>
+                    </label>
+                    <button type="submit" class="reply-create-btn" th:data-parent-id="${item.id}">작성</button>
+                    <button type="button" class="reply-cancel-btn">취소</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 대댓글 -->
+        <div style="margin-left: 40px; margin-top: 15px;">
+            <div th:each="reply : ${item.children}" class="reply-item" style="border-left: 3px solid #ddd; padding-left: 15px; margin-bottom: 10px;">
+                <input type="hidden" name="commentId" th:value="${reply.id}">
+                <strong th:text="${reply.author}"></strong>
+                <span th:text="${#temporals.format(reply.updatedAt, 'yyyy-MM-dd HH:mm')}"></span>
+                <p th:text="${reply.comment}"></p>
+
+                <form style="display:inline;">
+                    <button type="button" class="comment-update-btn" th:data-reply-id="${reply.id}">수정</button>
+                    <button type="button" class="comment-delete-btn" th:data-reply-id="${reply.id}">삭제</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

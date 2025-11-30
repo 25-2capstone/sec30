@@ -2,6 +2,8 @@ package com.gmg.sec30.controller;
 
 import com.gmg.sec30.dto.response.CommentResponseDto;
 import com.gmg.sec30.dto.response.PlaylistResponseDto;
+import com.gmg.sec30.entity.Comment;
+import com.gmg.sec30.repository.CommentRepository;
 import com.gmg.sec30.service.CommentService;
 import com.gmg.sec30.service.LikeService;
 import com.gmg.sec30.service.PlaylistService;
@@ -27,6 +29,7 @@ public class PlaylistController {
     private final PlaylistService playlistService;
     private final CommentService commentService;
     private final LikeService likeService;
+    private final CommentRepository commentRepository;
 
     /**
      * 플레이리스트 목록 페이지
@@ -54,8 +57,8 @@ public class PlaylistController {
         model.addAttribute("playlist", playlist);
 
         // 댓글 목록 조회
-        List<CommentResponseDto> comments = commentService.getPlaylistComments(id);
-        model.addAttribute("comments", comments);
+        List<Comment> rootComments = commentRepository.findByPlaylistIdAndParentIsNull(id);
+        model.addAttribute("comments", rootComments);
 
         // 좋아요 여부 확인 (로그인한 경우에만)
         if (userDetails != null) {

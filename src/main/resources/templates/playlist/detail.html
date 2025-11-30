@@ -4,204 +4,165 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layout/base}">
 <head>
-  <title>플레이리스트 상세 - Sec30 Music</title>
+    <title>플레이리스트 상세 - Sec30 Music</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/comment.js" defer></script>
+    <link rel="stylesheet" th:href="@{/css/comment-update-modal.css}">
 </head>
 <body>
-  <div layout:fragment="content">
+<div layout:fragment="content">
     <!-- 플레이리스트 헤더 -->
     <section class="playlist-header" th:if="${playlist != null}">
-      <div class="playlist-cover">
-        <img th:src="${playlist.coverImage}"
-             th:alt="${playlist.name}"
-             onerror="this.src='https://via.placeholder.com/300x300?text=Playlist'">
-      </div>
-      <div class="playlist-meta">
-        <div class="playlist-type">플레이리스트</div>
-        <h1 th:text="${playlist.name}">플레이리스트 제목</h1>
-        <p class="playlist-description" th:text="${playlist.description}">설명</p>
-        <div class="playlist-info">
-          <span th:text="${playlist.ownerName}">Owner</span>
-          <span class="playlist-info-dot"></span>
-          <span th:text="${playlist.trackCount} + '곡'">0곡</span>
-          <span class="playlist-info-dot"></span>
-          <span th:text="${playlist.likeCount} + '명이 좋아합니다'">0명이 좋아합니다</span>
+        <div class="playlist-cover">
+            <img th:src="${playlist.coverImage}"
+                 th:alt="${playlist.title}"
+                 onerror="this.src='https://via.placeholder.com/300x300?text=Playlist'">
         </div>
-      </div>
+        <div class="playlist-meta">
+            <div class="playlist-type">플레이리스트</div>
+            <h1 th:text="${playlist.title}">플레이리스트 제목</h1>
+            <p class="playlist-description" th:text="${playlist.description}">설명</p>
+            <div class="playlist-info">
+                <span th:text="${playlist.username}">Owner</span>
+                <span class="playlist-info-dot"></span>
+                <span th:text="${playlist.trackCount} + '곡'">0곡</span>
+                <span class="playlist-info-dot"></span>
+                <span th:text="${playlist.likeCount} + '명이 좋아합니다'">0명이 좋아합니다</span>
+            </div>
+        </div>
     </section>
 
     <!-- 플레이리스트 액션 -->
     <section class="playlist-actions" th:if="${playlist != null}">
-      <button class="btn-play-large"></button>
-      <button class="btn-icon"
-              sec:authorize="isAuthenticated()"
-              th:attr="data-playlist-id=${playlist.id}"
-              onclick="toggleLike(this)">
-        <span th:text="${isLiked ? '❤️' : '🤍'}">🤍</span>
-      </button>
+        <button class="btn-play-large"></button>
+        <button class="btn-icon"
+                sec:authorize="isAuthenticated()"
+                th:attr="data-playlist-id=${playlist.id}"
+                onclick="toggleLike(this)">
+            <span th:text="${isLiked ? '❤️' : '🤍'}">🤍</span>
+        </button>
     </section>
 
     <!-- 트랙 리스트 -->
     <section class="playlist-tracks" th:if="${tracks != null and !tracks.isEmpty()}">
-      <div class="playlist-tracks-header">
-        <div>#</div>
-        <div>제목</div>
-        <div>앨범</div>
-        <div>추가된 날짜</div>
-        <div></div>
-      </div>
+        <div class="playlist-tracks-header">
+            <div>#</div>
+            <div>제목</div>
+            <div>앨범</div>
+            <div>추가된 날짜</div>
+            <div></div>
+        </div>
 
-      <div class="playlist-track" th:each="track, iterStat : ${tracks}">
-        <div class="track-number" th:text="${iterStat.index + 1}">1</div>
-        <div class="track-title-cell">
-          <img th:src="${track.albumImage}"
-               th:alt="${track.name}"
-               onerror="this.src='https://via.placeholder.com/48x48?text=Track'">
-          <div class="track-title-info">
-            <div class="track-title-name" th:text="${track.name}">Track Name</div>
-            <div class="track-title-artist" th:text="${track.artist}">Artist</div>
-          </div>
+        <div class="playlist-track" th:each="track, iterStat : ${tracks}">
+            <div class="track-number" th:text="${iterStat.index + 1}">1</div>
+            <div class="track-title-cell">
+                <img th:src="${track.albumImage}"
+                     th:alt="${track.name}"
+                     onerror="this.src='https://via.placeholder.com/48x48?text=Track'">
+                <div class="track-title-info">
+                    <div class="track-title-name" th:text="${track.name}">Track Name</div>
+                    <div class="track-title-artist" th:text="${track.artist}">Artist</div>
+                </div>
+            </div>
+            <div class="track-album" th:text="${track.album}">Album</div>
+            <div class="track-date" th:text="${track.addedAt}">Date</div>
+            <div class="track-actions">
+                <audio controls
+                       th:if="${track.previewUrl != null}"
+                       th:src="${track.previewUrl}">
+                </audio>
+            </div>
         </div>
-        <div class="track-album" th:text="${track.album}">Album</div>
-        <div class="track-date" th:text="${track.addedAt}">Date</div>
-        <div class="track-actions">
-          <audio controls
-                 th:if="${track.previewUrl != null}"
-                 th:src="${track.previewUrl}">
-          </audio>
-        </div>
-      </div>
     </section>
 
     <!-- 댓글 섹션 -->
     <section class="comments-section" sec:authorize="isAuthenticated()" style="margin-top: 48px; padding: 0 32px;">
-      <h3 style="font-size: 24px; margin-bottom: 24px;">댓글</h3>
+        <input type="hidden" id="playlist-id" th:value="${playlist.id}">
+        <div th:replace="~{fragments/comment-list :: comments-list}"></div>
 
-      <!-- 댓글 작성 폼 -->
-      <form id="commentForm" style="margin-bottom: 32px;">
-        <textarea id="commentContent" name="content"
-                  placeholder="댓글을 입력하세요..."
-                  style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text); min-height: 80px; resize: vertical;"
-                  required></textarea>
-        <button type="submit" class="btn btn-primary" style="margin-top: 12px;">댓글 작성</button>
-      </form>
-
-      <!-- 댓글 목록 -->
-      <div class="comments-list" th:if="${comments != null and !comments.isEmpty()}">
-        <div th:each="comment : ${comments}"
-             style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; margin-bottom: 12px;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-            <span style="font-weight: 600;" th:text="${comment.username}">User</span>
-            <span style="color: var(--muted); font-size: 12px;" th:text="${comment.createdAt}">Date</span>
-          </div>
-          <p style="color: var(--text); line-height: 1.6;" th:text="${comment.content}">Comment content</p>
+        <!-- 댓글 작성 폼 -->
+        <div class="comment-write">
+            <fieldset>
+                <legend class="skipinfo">댓글 입력</legend>
+                <form id="comment-form" style="margin-bottom: 32px;">
+            <textarea id="comment-content" name="content"
+                      placeholder="댓글을 입력하세요..."
+                      style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text); min-height: 80px; resize: vertical;"
+                      required></textarea>
+                    <button type="submit" class="btn btn-primary" id="comment-create-btn" style="margin-top: 12px;">댓글 작성</button>
+                </form>
+            </fieldset>
         </div>
-      </div>
+
+        <!-- 댓글 수정 모달 -->
+        <div id="comment-update-popup" class="pop-layer">
+            <h3>댓글 수정</h3>
+            <div class="pop-container">
+                <input type="hidden" id="modal-comment-id">
+                <table class="tb tb-row tl">
+                    <colgroup>
+                        <col style="width:30%;" /><col style="width:70%;" />
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <th scope="row">작성자<span class="es">필수 입력</span></th>
+                        <td><input type="text" id="modal-writer" name="modal-writer" placeholder="작성자를 입력해 주세요." readonly /></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">내용<span class="es">필수 입력</span></th>
+                        <td><textarea id="modal-content" name="modal-content" cols="90" rows="10" placeholder="수정할 내용을 입력해 주세요."></textarea></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p class="btn-set">
+                    <button type="button" id="comment-update-btn" class="btn btn-st2" onclick="updateComment()">수정</button>
+                    <button type="button" class="btn btn-bdr2" onclick="closeCommentUpdatePopup();">취소</button>
+                </p>
+            </div>
+            <button type="button" class="btn-close" onclick="closeCommentUpdatePopup();"><span><i class="far fa-times-circle"></i></span></button>
+        </div>
     </section>
 
+    <!-- 빈 상태 -->
     <div class="empty-state" th:if="${playlist == null}">
-      <div class="empty-state-icon">❌</div>
-      <div class="empty-state-title">플레이리스트를 찾을 수 없습니다</div>
+        <div class="empty-state-icon">❌</div>
+        <div class="empty-state-title">플레이리스트를 찾을 수 없습니다</div>
     </div>
-  </div>
+</div>
 
-  <th:block layout:fragment="scripts">
+<th:block layout:fragment="scripts">
     <script th:inline="javascript">
-      const playlistId = /*[[${playlist?.id}]]*/ null;
+        const playlistId = /*[[${playlist?.id}]]*/ null;
 
-      // 좋아요 토글
-      function toggleLike(button) {
-        const id = button.getAttribute('data-playlist-id') || playlistId;
-        if (!id) return;
+        function toggleLike(button) {
+            const id = button.getAttribute('data-playlist-id') || playlistId;
+            if (!id) return;
 
-        fetch(`/playlists/${id}/like`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(response => {
-          if (response.ok) {
-            // 좋아요 상태 확인
-            return fetch(`/playlists/${id}/like/status`);
-          }
-        })
-        .then(response => response.json())
-        .then(isLiked => {
-          if (isLiked) {
-            button.innerHTML = '<span>❤️</span>';
-          } else {
-            button.innerHTML = '<span>🤍</span>';
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('좋아요 처리 중 오류가 발생했습니다.');
-        });
-      }
-
-      // 댓글 작성
-      document.addEventListener('DOMContentLoaded', function() {
-        const commentForm = document.getElementById('commentForm');
-        if (commentForm) {
-          commentForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const content = document.getElementById('commentContent').value;
-            if (!content.trim()) {
-              alert('댓글 내용을 입력해주세요.');
-              return;
-            }
-
-            fetch(`/playlists/${playlistId}/comments`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ content: content })
+            fetch(`/playlists/${id}/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
-            .then(response => {
-              if (response.ok) {
-                alert('댓글이 작성되었습니다.');
-                location.reload();
-              } else {
-                alert('댓글 작성에 실패했습니다.');
-              }
-            })
-            .catch(error => {
-              console.error('Error:', error);
-              alert('댓글 작성 중 오류가 발생했습니다.');
-            });
-          });
+                .then(response => {
+                    if (response.ok) {
+                        return fetch(`/playlists/${id}/like/status`);
+                    }
+                })
+                .then(response => response.json())
+                .then(isLiked => {
+                    if (isLiked) {
+                        button.innerHTML = '<span>❤️</span>';
+                    } else {
+                        button.innerHTML = '<span>🤍</span>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('좋아요 처리 중 오류가 발생했습니다.');
+                });
         }
-      });
-
-      // 댓글 삭제
-      function deleteComment(commentId) {
-        if (!confirm('댓글을 삭제하시겠습니까?')) {
-          return;
-        }
-
-        fetch(`/comments/${commentId}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(response => {
-          if (response.ok) {
-            alert('댓글이 삭제되었습니다.');
-            location.reload();
-          } else {
-            alert('댓글 삭제에 실패했습니다.');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('댓글 삭제 중 오류가 발생했습니다.');
-        });
-      }
     </script>
-  </th:block>
+</th:block>
 </body>
 </html>
-
