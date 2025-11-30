@@ -69,9 +69,9 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
               <div>
                 <div style="font-size: 14px; color: var(--muted); margin-bottom: 4px;">
-                  플레이리스트: <a th:href="@{/playlist/{id}(id=${comment.playlistId})}" style="color: var(--primary); text-decoration: none;" th:text="${comment.playlistName}">플레이리스트 이름</a>
+                  플레이리스트: <a th:href="@{/playlist/{id}(id=${comment.playlistId.playlistId})}" style="color: var(--primary); text-decoration: none;" th:text="${comment.playlistId.playlistTitle}">플레이리스트 이름</a>
                 </div>
-                <div style="color: var(--text); font-size: 15px;" th:text="${comment.content}">댓글 내용</div>
+                <div style="color: var(--text); font-size: 15px;" th:text="${comment.comment}">댓글 내용</div>
               </div>
               <div style="font-size: 12px; color: var(--muted);" th:text="${comment.createdAt}">작성일</div>
             </div>

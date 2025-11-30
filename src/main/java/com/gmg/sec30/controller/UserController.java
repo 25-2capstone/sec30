@@ -1,6 +1,5 @@
 package com.gmg.sec30.controller;
 
-import com.gmg.sec30.dto.request.CommentRequestDto;
 import com.gmg.sec30.dto.response.CommentResponseDto;
 import com.gmg.sec30.service.CommentService;
 import com.gmg.sec30.service.LikeService;
@@ -24,33 +23,6 @@ public class UserController {
     private final CommentService commentService;
     private final LikeService likeService;
     private final UserService userService;
-
-    @PostMapping("/playlists/{playlistId}/comments")
-    @ResponseBody
-    public ResponseEntity<CommentResponseDto> createComment(
-            @PathVariable Integer playlistId,
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody CommentRequestDto dto) {
-        CommentResponseDto comment = commentService.createComment(
-                playlistId, userDetails.getUsername(), dto);
-        return ResponseEntity.ok(comment);
-    }
-
-    @DeleteMapping("/comments/{id}")
-    @ResponseBody
-    public ResponseEntity<Void> deleteComment(
-            @PathVariable Integer id,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        commentService.deleteComment(id, userDetails.getUsername());
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/playlists/{playlistId}/comments")
-    @ResponseBody
-    public ResponseEntity<List<CommentResponseDto>> getPlaylistComments(@PathVariable Integer playlistId) {
-        List<CommentResponseDto> comments = commentService.getPlaylistComments(playlistId);
-        return ResponseEntity.ok(comments);
-    }
 
     @GetMapping("/my/comments")
     @ResponseBody

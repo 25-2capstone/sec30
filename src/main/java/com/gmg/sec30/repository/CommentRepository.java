@@ -4,13 +4,13 @@ import com.gmg.sec30.entity.Comment;
 import com.gmg.sec30.entity.Playlist;
 import com.gmg.sec30.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-@Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
-    List<Comment> findByPlaylistOrderByCreateAtDesc(Playlist playlist);
-    List<Comment> findByUserOrderByCreateAtDesc(User user);
+    @Query("SELECT c FROM Comment c WHERE c.playlistId.id = :playlistId AND c.parent IS NULL ORDER BY c.createdAt DESC")
+    List<Comment> findByPlaylistIdAndParentIsNull(@Param("playlistId") Integer playlistId);
+    List<Comment> findByAuthorOrderByCreatedAtDesc(String author);
 }
-

@@ -1,48 +1,63 @@
 package com.gmg.sec30.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "comment")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@SQLDelete(sql = "UPDATE comment SET delete_at = CURRENT_TIMESTAMP WHERE comment_id = ?")
-@Where(clause = "delete_at IS NULL")
-public class Comment extends BaseTimeEntity {
+@EntityListeners(AuditingEntityListener.class)
+@Entity // 엔티티로 지정
 
-    @Id
+public class Comment {
+
+    @Id // id 필드를 기본키로 지정.
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
-    private Integer commentId;
+    @Column(name = "id", updatable = false)
+    private Integer id;
 
-    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
-    private String content;
-
-    // --- 연관관계 매핑 ---
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "playlist_id", nullable = false)
-    private Playlist playlist;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    // 대댓글 (셀프 조인)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
+    @ManyToOne
+    @JsonBackReference("parent-children")
+    @JoinColumn(name = "parent_id", nullable = true)
     private Comment parent;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @JsonManagedReference("parent-children")
     private List<Comment> children = new ArrayList<>();
+
+    @ManyToOne
+    @JsonBackReference("playlist-comments")
+    @JoinColumn(name = "playlist_id", nullable = false)
+    private Playlist playlistId;
+
+    @Column(name = "comment", nullable = false)
+    private String comment;
+
+    @Column(name = "author", nullable = false)
+    private String author;
+
+    @CreatedDate
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    public void update(String comment, LocalDateTime updatedAt) {
+        this.comment = comment;
+        this.updatedAt = updatedAt;
+    }
 }

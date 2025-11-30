@@ -1,5 +1,6 @@
 package com.gmg.sec30.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -40,9 +41,10 @@ public class Playlist extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "playlist", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "playlistId", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JsonManagedReference("playlist-comments")
+    @OrderBy("id asc") // 댓글 정렬
+    private List<Comment> comments;
 
     @Builder.Default
     @OneToMany(mappedBy = "playlist", cascade = CascadeType.ALL, orphanRemoval = true)
